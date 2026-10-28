@@ -7,7 +7,7 @@
 using namespace sf;
 
 Player::Player(float x, float y, float w, float h, const Texture& name) : Entity(x, y, w, h, name), lastDirection(0.f, 0.f) {    
-    hitbox = FloatRect(-16.f, -16.f, 32.f, 16.f);
+    hitbox = FloatRect(-24.f, -20.f, 48.f, 20.f);
 }
 
 void Player::setDirection(Vector dir) {
@@ -23,18 +23,18 @@ void Player::update(float time, Game& game) {
             currentFrame -= 3;
         }
         
-        int frameX = 64 * int(currentFrame);
+        int frameX = 96 * int(currentFrame);
         if (lastDirection.y < 0) {
-            sprite.setTextureRect(IntRect(frameX, 0, 64, 96));
+            sprite.setTextureRect(IntRect(frameX, 288, 96, 96));
         }
         if (lastDirection.y > 0) {
-            sprite.setTextureRect(IntRect(frameX, 288, 64, 96));
+            sprite.setTextureRect(IntRect(frameX, 0, 96, 96));
         }
         if (lastDirection.x < 0) {
-            sprite.setTextureRect(IntRect(frameX, 192, 64, 96));
+            sprite.setTextureRect(IntRect(frameX, 96, 96, 96));
         }
         if (lastDirection.x > 0) {
-            sprite.setTextureRect(IntRect(frameX, 96, 64, 96));
+            sprite.setTextureRect(IntRect(frameX, 192, 96, 96));
         }
     }
 

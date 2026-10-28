@@ -13,9 +13,9 @@ private:
 
 public:
     AssetManager() {
-        textures["hero"].loadFromFile("icons/hero_new_2.png");
-        textures["map"].loadFromFile("icons/Sprite-0001.png");
-        textures["sheep"].loadFromFile("icons/hello.png");
+        textures["hero"].loadFromFile("icons/hero.png");
+        textures["map"].loadFromFile("icons/map.png");
+        textures["sheep"].loadFromFile("icons/sheep_hi.png");
     }
 
     const Texture& get(const std::string& name) {

@@ -77,7 +77,7 @@ public:
 
 class Sheep final : public Entity {
 private:
-    bool is_trapped = false;
+    bool isTrapped = false;
     Vector lastDirection;
 
 public:
