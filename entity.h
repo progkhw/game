@@ -3,73 +3,42 @@
 #include <SFML/Graphics.hpp>
 
 #include <string>
+#include <vector>
 #include "vector.h"
-#include "map.h"
+#include <optional>
 
 class Game;
-
-using namespace sf;
 
 class Entity {
 protected:
     Vector position;
-    Vector speed;
+    Vector direction;
+    float speed;
+    Vector lookDirection;
 
     float currentFrame = 0.f;
-
     Vector size;
-    FloatRect hitbox;
-
-    Sprite sprite;
+    sf::FloatRect hitbox;
+    sf::Sprite sprite;
 
 public:
-    Entity(float x, float y, float w, float h, const Texture& texture)
-        : position(x, y), size(w, h) {
-            sprite.setTexture(texture);
-
-            sprite.setTextureRect(IntRect(0, 0, size.x, size.y));
-            sprite.setOrigin(size.x / 2, size.y);
-    }
-
+    Entity(float x, float y, float w, float h, const sf::Texture& texture);
     virtual ~Entity() = default;
 
     virtual void update(float time, Game& game) = 0;
-    void draw(sf::RenderWindow& window) {
-        window.draw(sprite);
-    }
+    void draw(sf::RenderWindow& window);
+    void updateAnimation(int stepByX, int moveToLeft, int moveToRight, int moveToUp, int moveToDown, float time);
 
-    Vector getPosition() const {
-        return position;
-    }
-
-    bool isColliding(float testX, float testY) {
-        float leftTile = (testX + hitbox.left) / 32;
-        float rightTile = (testX + hitbox.left + hitbox.width) / 32;
-        float topTile = (testY + hitbox.top) / 32;
-        float bottomTile = (testY + hitbox.top + hitbox.height) / 32;
-
-        for (int i = topTile; i <= bottomTile; ++i) {
-            for (int j = leftTile; j <= rightTile; ++j) {
-                if (i < 0 || i >= HEIGHT_MAP || j < 0 || j >= WIDTH_MAP) {
-                    return true;
-                }
-
-                if (TileMap[i][j] == '0') {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
+    Vector getPosition() const;
+    bool isColliding(float testX, float testY, const Game& game);
+    bool isCollidingWithObstacles(float testX, float testY, const Game& game);
 };
 
 class Player final : public Entity {
 private:
-    Vector lastDirection;
 
 public:
-    Player(float x, float y, float w, float h, const Texture& name);
+    Player(float x, float y, float w, float h, const sf::Texture& name);
    
     void setDirection(Vector dir);
     void update(float time, Game& game) override;
@@ -78,10 +47,17 @@ public:
 class Sheep final : public Entity {
 private:
     bool isTrapped = false;
-    Vector lastDirection;
 
 public:
-    Sheep(float x, float y, float w, float h, const Texture& name);
+    Sheep(float x, float y, float w, float h, const sf::Texture& name);
 
     void update(float time, Game& game) override;
+
+    Vector calculateFear(const Player& player) const;
+    Vector calculateAttraction(const std::vector<Sheep>& sheeps) const;
+    Vector calculateSeparation(const std::vector<Sheep>& sheeps) const;
+    std::vector<Vector> getSupportDir() const;
+    float isBarrierOnWay(const Vector& ray, float distance, const Game& game);
+    Vector getBestDir(const Game& game);
+    //Vector calculatePushingWall(const std::array<std::string, HEIGHT_MAP>& map) const;
 };

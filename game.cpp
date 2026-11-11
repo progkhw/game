@@ -1,21 +1,69 @@
 #include "game.h"
 
 #include <SFML/Graphics.hpp>
+#include <iostream>
 #include <vector>
+#include <string>
+#include <fstream>
 #include "entity.h"
 #include "vector.h"
-#include "map.h"
 
 Game::Game() :
-    window(VideoMode(640, 480), "Отара"),
-    player(640, 400, 64, 96, assets.get("hero")) {
+    window(sf::VideoMode(640, 480), "Отара"),
+    player(640, 400, 96, 96, assets.get("hero")) {
 
-    view.reset(FloatRect(0, 0, 640, 480));
+    view.reset(sf::FloatRect(0, 0, 640, 480));
     s_map.setTexture(assets.get("map"));
+
+    bool loading = loadLevel("/home/progkhw/study/game/map.txt");
+    if (!loading) {
+        std::cerr << "карта не загружена\n";
+    }
 
     for (int i = 0; i < 5; ++i) {
         sheeps.push_back(Sheep(200 + i * 32, 250, 32, 32, assets.get("sheep")));
     }
+}
+
+bool Game::loadLevel(const std::string& path) {
+    std::ifstream inf(path);
+    if (!inf) {
+        return false;
+    }
+
+    obstacles.clear();
+
+    std::string line;
+    for (int i = 0; i < HEIGHT_MAP; ++i) {
+        if (!std::getline(inf, line)) {
+            return false;
+        }
+
+        if (!line.empty() && line.back() == '\r') {
+            line.pop_back();
+        }
+
+        line.resize(WIDTH_MAP, ' ');
+        tileMap[i] = line;
+
+        for (int j = 0; j < WIDTH_MAP; ++j) {
+            if (tileMap[i][j] == 'k') {
+                Obstacle obj(Vector(j * TILE_SIZE, i * TILE_SIZE), sf::FloatRect(7.f, 6.f, 18.f, 18.f));
+                obstacles.push_back(obj);
+            }
+        }
+    }
+
+    return true;
+}
+
+bool Game::isSolid(int tx, int ty) const {
+    if (tx < 0 || tx >= WIDTH_MAP || ty < 0 || ty >= HEIGHT_MAP) {
+        return true;
+    }
+
+    char c = tileMap[ty][tx];
+    return c == '0';
 }
 
 Player& Game::getPlayer() {
@@ -26,32 +74,40 @@ std::vector<Sheep>& Game::getSheeps() {
     return sheeps;
 }
 
+const std::vector<Obstacle>& Game::getObstacles() const {
+    return obstacles;
+}
+
+/*std::array<std::string, HEIGHT_MAP>& getMap() {
+    return tileMap;
+}*/
+
 void Game::run() {
-    Clock clock;
+    sf::Clock clock;
 
     while (window.isOpen()) {
         float time = clock.getElapsedTime().asMicroseconds();
         clock.restart();
         time = time / 800;
 
-        Event event;
+        sf::Event event;
         while (window.pollEvent(event)) {
-            if (event.type == Event::Closed) {
+            if (event.type == sf::Event::Closed) {
                 window.close();
             }
         }
 
         Vector direction;
-        if (Keyboard::isKeyPressed(Keyboard::W)) {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
             direction.y -= 1.f;
         }
-        if (Keyboard::isKeyPressed(Keyboard::S)) {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
             direction.y += 1.f;
         }
-        if (Keyboard::isKeyPressed(Keyboard::A)) {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
             direction.x -= 1.f;
         }
-        if (Keyboard::isKeyPressed(Keyboard::D)) {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
             direction.x += 1.f;
         }
 
@@ -68,32 +124,36 @@ void Game::run() {
             tempX = 320;
         }
     
-        if (tempX > 960) {
-            tempX = 960;
+        if (tempX > 1056) {
+            tempX = 1056;
         }
 
         if (tempY < 240) {
             tempY = 240;
         }
 
-        if (tempY > 560) {
-            tempY = 560;
+        if (tempY > 784) {
+            tempY = 784;
         }
 
         view.setCenter(tempX, tempY);
         window.setView(view);
         window.clear();
 
+
         for (int i = 0; i < HEIGHT_MAP; ++i) {
             for (int j = 0; j < WIDTH_MAP; ++j) {
-                if (TileMap[i][j] == ' ') {
-                    s_map.setTextureRect(IntRect(32, 0, 32, 32));
+                if (tileMap[i][j] == ' ') {
+                    s_map.setTextureRect(sf::IntRect(32, 0, 32, 32));
                 }
-                if (TileMap[i][j] == 's') {
-                    s_map.setTextureRect(IntRect(64, 0, 32, 32));
+                if (tileMap[i][j] == 's') {
+                    s_map.setTextureRect(sf::IntRect(64, 0, 32, 32));
                 }
-                if (TileMap[i][j] == '0') {
-                    s_map.setTextureRect(IntRect(0, 0, 32, 32));
+                if (tileMap[i][j] == '0') {
+                    s_map.setTextureRect(sf::IntRect(0, 0, 32, 32));
+                }
+                if (tileMap[i][j] == 'k') {
+                    s_map.setTextureRect(sf::IntRect(96, 0, 32, 32));
                 }
 
                 s_map.setPosition(j * 32, i * 32);

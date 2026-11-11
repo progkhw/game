@@ -47,6 +47,12 @@ struct Vector {
         return output;
     }
 
+    float dot(const Vector& other) const {
+        float scalar = x * other.x + y * other.y;
+        
+        return scalar;
+    }
+
     float length() const {
         return std::sqrt(x * x + y * y);
     }
