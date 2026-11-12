@@ -6,6 +6,8 @@
 #include <string>
 #include <fstream>
 #include "entity.h"
+#include "player.h"
+#include "sheep.h"
 #include "vector.h"
 
 Game::Game() :
@@ -64,6 +66,21 @@ bool Game::isSolid(int tx, int ty, bool canPassToZagon) const {
 
     char c = tileMap[ty][tx];
     return c == '0' || (!canPassToZagon && c == 'i');
+}
+
+bool Game::isInTargetTile(float x, float y, char typeTile) const {
+    int posTileX = std::floor(x / TILE_SIZE);
+    int posTileY = std::floor(y / TILE_SIZE);
+
+    if (posTileX < 0 || posTileX >= WIDTH_MAP || posTileY < 0 || posTileY >= HEIGHT_MAP) {
+        return false;
+    }
+
+    if (tileMap[posTileY][posTileX] == typeTile) {
+        return true;
+    }
+    
+    return false;
 }
 
 Player& Game::getPlayer() {
@@ -157,6 +174,9 @@ void Game::run() {
                 }
                 if (tileMap[i][j] == 'd') {
                     s_map.setTextureRect(sf::IntRect(160, 0, 32, 32));
+                }
+                if (tileMap[i][j] == 'i') {
+                    s_map.setTextureRect(sf::IntRect(128, 0, 32, 32));
                 }
 
                 s_map.setPosition(j * 32, i * 32);

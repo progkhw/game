@@ -1,9 +1,13 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+
 #include "entity.h"
-#include "vector.h"
+#include "player.h"
+#include "sheep.h"
 #include "obstacle.h"
+#include "vector.h"
+
 #include <array>
 #include <vector>
 #include <string>
@@ -45,6 +49,7 @@ public:
 
     bool loadLevel(const std::string& path);
     bool isSolid(int tx, int ty, bool canPassToZagon = false) const;
+    bool isInTargetTile(float x, float y, char typeTile) const;
 
     Player& getPlayer();
     std::vector<Sheep>& getSheeps();

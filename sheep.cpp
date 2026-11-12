@@ -1,3 +1,5 @@
+#include "sheep.h"
+
 #include "entity.h"
 #include "game.h"
 
@@ -166,6 +168,32 @@ Vector Sheep::getBestDir(const Game& game) {
     return bestDir.direction;
 }
 
+void Sheep::updateZagonStatus(const Game& game, float time) {
+    float centerX = position.x + hitbox.left + hitbox.width / 2.f;
+    float centerY = position.y + hitbox.top + hitbox.height / 2.f;
+
+    if (status == StatusSheep::Free && game.isInTargetTile(centerX, centerY, 'i')) {
+        status = StatusSheep::EnteringZagon;
+        timer = 0.f;
+        return;
+    }
+    
+    if (status == StatusSheep::EnteringZagon) {
+        if (game.isInTargetTile(centerX, centerY, 'i')) {
+            timer += time;
+
+            if (timer >= 3750.f) {
+                status = StatusSheep::InZagon;
+                return;
+            }
+        }
+        else {
+            status = StatusSheep::Free;
+            timer = 0.f;
+        }
+    }
+}
+
 // метод обновления
 void Sheep::update(float time, Game& game) {
     Player& player = game.getPlayer();
@@ -196,6 +224,13 @@ void Sheep::update(float time, Game& game) {
         }
     }
 
+    if (status == StatusSheep::InZagon) {
+        speed = 0.f;
+    }
+    else if (status == StatusSheep::EnteringZagon) {
+        speed *= 0.7f;
+    }
+
     float nextX = position.x + direction.x * speed * time;
     if (!isColliding(nextX, position.y, game, true)) {
         position.x = nextX;
@@ -205,6 +240,8 @@ void Sheep::update(float time, Game& game) {
     if (!isColliding(position.x, nextY, game, true)) {
         position.y = nextY;
     }
+
+    updateZagonStatus(game, time);
 
     if (speed > 0.01f) {
         lookDirection = direction;

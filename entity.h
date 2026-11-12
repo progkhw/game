@@ -5,7 +5,6 @@
 #include <string>
 #include <vector>
 #include "vector.h"
-#include <optional>
 
 class Game;
 
@@ -31,32 +30,4 @@ public:
 
     Vector getPosition() const;
     bool isColliding(float testX, float testY, const Game& game, bool canPassToZagon = false);
-};
-
-class Player final : public Entity {
-private:
-
-public:
-    Player(float x, float y, float w, float h, const sf::Texture& name);
-   
-    void setDirection(Vector dir);
-    void update(float time, Game& game) override;
-};
-
-class Sheep final : public Entity {
-private:
-    bool isTrapped = false;
-
-public:
-    Sheep(float x, float y, float w, float h, const sf::Texture& name);
-
-    void update(float time, Game& game) override;
-
-    Vector calculateFear(const Player& player) const;
-    Vector calculateAttraction(const std::vector<Sheep>& sheeps) const;
-    Vector calculateSeparation(const std::vector<Sheep>& sheeps) const;
-    std::vector<Vector> getSupportDir() const;
-    float isBarrierOnWay(const Vector& ray, float distance, const Game& game);
-    Vector getBestDir(const Game& game);
-    //Vector calculatePushingWall(const std::array<std::string, HEIGHT_MAP>& map) const;
 };
