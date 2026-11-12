@@ -20,7 +20,7 @@ private:
 public:
     AssetManager() {
         textures["hero"].loadFromFile("/home/progkhw/study/game/icons/hero.png");
-        textures["map"].loadFromFile("/home/progkhw/study/game/icons/new_map.png");
+        textures["map"].loadFromFile("/home/progkhw/study/game/icons/new_map_2.png");
         textures["sheep"].loadFromFile("/home/progkhw/study/game/icons/sheep_hi.png");
     }
 
@@ -44,7 +44,7 @@ public:
     Game();
 
     bool loadLevel(const std::string& path);
-    bool isSolid(int tx, int ty) const;
+    bool isSolid(int tx, int ty, bool canPassToZagon = false) const;
 
     Player& getPlayer();
     std::vector<Sheep>& getSheeps();

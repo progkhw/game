@@ -46,7 +46,7 @@ Vector Entity::getPosition() const {
     return position;
 }
 
-bool Entity::isColliding(float testX, float testY, const Game& game) {
+bool Entity::isColliding(float testX, float testY, const Game& game, bool canPassToZagon) {
     float left = testX + hitbox.left;
     float right = testX + hitbox.left + hitbox.width;
     float top = testY + hitbox.top;
@@ -65,7 +65,7 @@ bool Entity::isColliding(float testX, float testY, const Game& game) {
                 return true;
             }
 
-            if (game.isSolid(j, i)) {
+            if (game.isSolid(j, i, canPassToZagon)) {
                 return true;
             }
         }

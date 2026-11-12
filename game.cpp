@@ -57,13 +57,13 @@ bool Game::loadLevel(const std::string& path) {
     return true;
 }
 
-bool Game::isSolid(int tx, int ty) const {
+bool Game::isSolid(int tx, int ty, bool canPassToZagon) const {
     if (tx < 0 || tx >= WIDTH_MAP || ty < 0 || ty >= HEIGHT_MAP) {
         return true;
     }
 
     char c = tileMap[ty][tx];
-    return c == '0';
+    return c == '0' || (!canPassToZagon && c == 'i');
 }
 
 Player& Game::getPlayer() {
@@ -154,6 +154,9 @@ void Game::run() {
                 }
                 if (tileMap[i][j] == 'k') {
                     s_map.setTextureRect(sf::IntRect(96, 0, 32, 32));
+                }
+                if (tileMap[i][j] == 'd') {
+                    s_map.setTextureRect(sf::IntRect(160, 0, 32, 32));
                 }
 
                 s_map.setPosition(j * 32, i * 32);

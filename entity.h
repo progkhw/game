@@ -30,8 +30,7 @@ public:
     void updateAnimation(int stepByX, int moveToLeft, int moveToRight, int moveToUp, int moveToDown, float time);
 
     Vector getPosition() const;
-    bool isColliding(float testX, float testY, const Game& game);
-    bool isCollidingWithObstacles(float testX, float testY, const Game& game);
+    bool isColliding(float testX, float testY, const Game& game, bool canPassToZagon = false);
 };
 
 class Player final : public Entity {

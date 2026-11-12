@@ -126,7 +126,7 @@ float Sheep::isBarrierOnWay(const Vector& ray, float distance, const Game& game)
         traveledDistance += section.length();
         currentPos += section;
 
-        if (isColliding(currentPos.x, currentPos.y, game)) {
+        if (isColliding(currentPos.x, currentPos.y, game, true)) {
             return traveledDistance;
         }
     }
@@ -197,12 +197,12 @@ void Sheep::update(float time, Game& game) {
     }
 
     float nextX = position.x + direction.x * speed * time;
-    if (!isColliding(nextX, position.y, game)) {
+    if (!isColliding(nextX, position.y, game, true)) {
         position.x = nextX;
     }
 
     float nextY = position.y + direction.y * speed * time;
-    if (!isColliding(position.x, nextY, game)) {
+    if (!isColliding(position.x, nextY, game, true)) {
         position.y = nextY;
     }
 
