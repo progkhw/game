@@ -30,5 +30,6 @@ public:
     float isBarrierOnWay(const Vector& ray, float distance, const Game& game);
     Vector getBestDir(const Game& game);
 
+    StatusSheep getStatus() const;
     void updateZagonStatus(const Game& game, float time);
 };

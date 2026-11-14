@@ -8,15 +8,15 @@
 0 s     s     s         s k     d ss  d   0
 0       s          s  s    ds             0
 0s     k     k            s        s      0
-0      s    s     d     d             d   0
+0      s  s s     d     d             d   0
 0 d         s    ss    k   d    d s   s s 0
-0  s       d      d    k   s         s    0
-0s  d s    s k      s          iiiiiii  s 0
+0  s       d     kd    k   s         s    0
+0s  d s    s k  ss  s          iiiiiii  s 0
 0             d  s d    s  ss  iiiiiiik   0
 0        s   s             d  siiiiiii k  0
-0 ss              d ss        kiiiiiii d  0
-0  s    s    s           ss    iiiiiii    0
-0   d      d           k  d   siiiiiii    0
+0 ss            k d ss        kiiiiiii d  0
+0  s    s    s   k       ss    iiiiiii    0
+0   d      d  s        k  d   siiiiiii    0
 0       s   s     s          s      k s   0
 0  s   k             s   ss s    s      s 0
 0      s       s   s  d   d          sd   0
@@ -26,7 +26,7 @@
 0   d  k    k   s     d         ks  ks    0
 0   s   s   s        ss         d         0
 0                     d  ss        s  d s 0
-0   d    s d  sd   s         d  d         0
+0   d    s d  sd k s         d  d         0
 0    s                  s     s  s   d  s 0
 0s        s     s kd   dd s    s     s    0
 0000000000000000000000000000000000000000000

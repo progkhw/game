@@ -8,18 +8,18 @@
 #include <optional>
 
 // радиус обнаружения, радиус стада, радиус отталкивания
-const float DETECTION_RADIUS = 224.f;
+const float DETECTION_RADIUS = 200.f;
 const float HERD_RADIUS = 192.f;
 const float SEPARATION_RADIUS = 48.f;
 
 const float EVASION = 64.f;
 
-const float MAX_SPEED = 0.06f;
+const float MAX_SPEED = 0.07f;
 const float FRICTION = 0.9f;
 
-const float W_FEAR = 5.0f;
+const float W_FEAR = 9.0f;
 const float W_ATTRACTION = 1.5f;
-const float W_SEPARATION = 2.0f;
+const float W_SEPARATION = 4.0f;
 
 struct DirectionCandidate {
     float distance;
@@ -55,6 +55,10 @@ Vector Sheep::calculateAttraction(const std::vector<Sheep>& sheeps) const {
             continue;
         }
 
+        if (sheep.getStatus() == StatusSheep::InZagon) {
+            continue;
+        }
+
         float distance = (sheep.getPosition() - position).length();
         if (distance < HERD_RADIUS) {
             centerHerd += sheep.getPosition();
@@ -77,6 +81,10 @@ Vector Sheep::calculateSeparation(const std::vector<Sheep>& sheeps) const {
 
     for (const auto& sheep : sheeps) {
         if (&sheep == this) {
+            continue;
+        }
+
+        if (sheep.getStatus() == StatusSheep::InZagon) {
             continue;
         }
 
@@ -168,6 +176,10 @@ Vector Sheep::getBestDir(const Game& game) {
     return bestDir.direction;
 }
 
+StatusSheep Sheep::getStatus() const {
+    return status;
+}
+
 void Sheep::updateZagonStatus(const Game& game, float time) {
     float centerX = position.x + hitbox.left + hitbox.width / 2.f;
     float centerY = position.y + hitbox.top + hitbox.height / 2.f;
@@ -196,6 +208,11 @@ void Sheep::updateZagonStatus(const Game& game, float time) {
 
 // метод обновления
 void Sheep::update(float time, Game& game) {
+    if (status == StatusSheep::InZagon) {
+        sprite.setPosition(position.x, position.y);
+        return;
+    }
+
     Player& player = game.getPlayer();
     std::vector<Sheep>& sheeps = game.getSheeps();
     Vector dir(0.f, 0.f);
@@ -224,19 +241,17 @@ void Sheep::update(float time, Game& game) {
         }
     }
 
-    if (status == StatusSheep::InZagon) {
-        speed = 0.f;
-    }
-    else if (status == StatusSheep::EnteringZagon) {
-        speed *= 0.7f;
+    float coef = 1.f;
+    if (status == StatusSheep::EnteringZagon) {
+        coef *= 0.7f;
     }
 
-    float nextX = position.x + direction.x * speed * time;
+    float nextX = position.x + direction.x * speed * time * coef;
     if (!isColliding(nextX, position.y, game, true)) {
         position.x = nextX;
     }
 
-    float nextY = position.y + direction.y * speed * time;
+    float nextY = position.y + direction.y * speed * time * coef;
     if (!isColliding(position.x, nextY, game, true)) {
         position.y = nextY;
     }

@@ -5,7 +5,7 @@
 #include "game.h"
 
 Player::Player(float x, float y, float w, float h, const sf::Texture& name) : Entity(x, y, w, h, name) {    
-    hitbox = sf::FloatRect(-24.f, -20.f, 48.f, 20.f);
+    hitbox = sf::FloatRect(-16.f, -20.f, 32.f, 20.f);
 }
 
 void Player::setDirection(Vector dir) {

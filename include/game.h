@@ -23,9 +23,9 @@ private:
 
 public:
     AssetManager() {
-        textures["hero"].loadFromFile("/home/progkhw/study/game/icons/hero.png");
-        textures["map"].loadFromFile("/home/progkhw/study/game/icons/new_map_2.png");
-        textures["sheep"].loadFromFile("/home/progkhw/study/game/icons/sheep_hi.png");
+        textures["hero"].loadFromFile("./assets/hero.png");
+        textures["map"].loadFromFile("./assets/new_map_3.png");
+        textures["sheep"].loadFromFile("./assets/sheep_hi.png");
     }
 
     const sf::Texture& get(const std::string& name) {
@@ -33,15 +33,32 @@ public:
     }
 };
 
+enum class GameState {
+    Playing,
+    Victory,
+    Defeat,
+    Pause,
+    Exit
+};
+
 class Game {
 private:
     sf::RenderWindow window;
     AssetManager assets;
+    GameState state;
+    float levelTime = 50.f;
+    float currentTime = 0.f;
+
     Player player;
     std::vector<Sheep> sheeps;
     std::vector<Obstacle> obstacles;
+
+    sf::Font font;
+    sf::Text availableTime;
+
     sf::Sprite s_map;
     sf::View view;
+    sf::View hudView;
     std::array<std::string, HEIGHT_MAP> tileMap;
 
 public:
@@ -50,6 +67,7 @@ public:
     bool loadLevel(const std::string& path);
     bool isSolid(int tx, int ty, bool canPassToZagon = false) const;
     bool isInTargetTile(float x, float y, char typeTile) const;
+    bool isGameEnd() const;
 
     Player& getPlayer();
     std::vector<Sheep>& getSheeps();
@@ -57,4 +75,5 @@ public:
     std::array<std::string, HEIGHT_MAP>& getMap();
 
     void run();
+    void render();
 };
