@@ -1,0 +1,54 @@
+{
+    "time": 80,
+
+    "playerSpawn": [20, 12],
+
+    "sheepSpawn": [
+        [2, 4],
+        [5, 3],
+        [2, 5],
+        [3, 14],
+        [11, 6],
+        [38, 24],
+        [7, 31],
+        [28, 30],
+        [14, 13],
+        [14, 19],
+        [15, 28]
+    ],
+
+    "map": [
+        "0000000000000000000000000000000000000000000",
+        "0    s   s        d  s     s              0",
+        "0   ssd      s ks       s       k s s     0",
+        "0s   k  d     s   d s    sk  s       s    0",
+        "0     s dk   s          s       d  s      0",
+        "0 d  s   s        s     ss d ss  s        0",
+        "0              k    d         s      s    0",
+        "0 s     s     s         s k     d ss  d   0",
+        "0       s          s  s    ds             0",
+        "0s     k     k            s        s      0",
+        "0      s  s s     d     d             d   0",
+        "0 d         s    ss    k   d    d s   s s 0",
+        "0  s       d     kd    k   s         s    0",
+        "0s  d s    s k  ss  s          iiiiiii  s 0",
+        "0             d  s d    s  ss  iiiiiiik   0",
+        "0        s   s             d  siiiiiii k  0",
+        "0 ss            k d ss        kiiiiiii d  0",
+        "0  s    s    s   k       ss    iiiiiii    0",
+        "0   d      d  s        k  d   siiiiiii    0",
+        "0       s   s     s          s      k s   0",
+        "0  s   k             s   ss s    s      s 0",
+        "0      s       s   s  d   d          sd   0",
+        "0  s   s    s d   k k              s      0",
+        "0 s s            k  k   ss   d  skdk      0",
+        "0      s    ss     s   s        k   ks    0",
+        "0   d  k    k   s     d         ks  ks    0",
+        "0   s   s   s        ss         d         0",
+        "0                     d  ss        s  d s 0",
+        "0   d    s d  sd k s         d  d         0",
+        "0    s                  s     s  s   d  s 0",
+        "0s        s     s kd   dd s    s     s    0",
+        "0000000000000000000000000000000000000000000"
+    ]
+}

@@ -40,10 +40,13 @@ void Entity::updateAnimation(int stepByX, int moveToLeft, int moveToRight, int m
     }
 }
 
-
-
 Vector Entity::getPosition() const {
     return position;
+}
+
+void Entity::setPosition(const Vector& newPosition) {
+    position = newPosition;
+    sprite.setPosition(newPosition.x, newPosition.y);
 }
 
 bool Entity::isColliding(float testX, float testY, const Game& game, bool canPassToZagon) {
@@ -59,9 +62,11 @@ bool Entity::isColliding(float testX, float testY, const Game& game, bool canPas
     int topTile = std::floor(top / 32);
     int bottomTile = std::floor(bottom / 32);
 
+    std::pair<int, int> mapSize = game.getMapSize();
+
     for (int i = topTile; i <= bottomTile; ++i) {
         for (int j = leftTile; j <= rightTile; ++j) {
-            if (i < 0 || i >= HEIGHT_MAP || j < 0 || j >= WIDTH_MAP) {
+            if (i < 0 || i >= mapSize.second || j < 0 || j >= mapSize.first) {
                 return true;
             }
 

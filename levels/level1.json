@@ -1,0 +1,31 @@
+{
+    "time": 50,
+
+    "playerSpawn": [3, 2],
+
+    "sheepSpawn": [
+        [7, 7],
+        [9, 8],
+        [8, 11],
+        [4, 5],
+        [3, 8]
+    ],
+
+    "map": [
+        "00000000000000000000",
+        "0 s      s         0",
+        "0ss  s s kk    ss  0",
+        "0         k    s  s0",
+        "0    s s   s       0",
+        "0kkk       k s  s  0",
+        "0     s s  k       0",
+        "0          s   s   0",
+        "0s  sk           s 0",
+        "0    ks s  kss kk  0",
+        "0    k      s   ks 0",
+        "0iiis s skkks   s  0",
+        "0iii s ss     s s  0",
+        "0iii       s s     0",
+        "00000000000000000000"
+    ]
+}

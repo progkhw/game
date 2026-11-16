@@ -8,13 +8,13 @@
 #include <optional>
 
 // радиус обнаружения, радиус стада, радиус отталкивания
-const float DETECTION_RADIUS = 200.f;
+const float DETECTION_RADIUS = 192.f;
 const float HERD_RADIUS = 192.f;
 const float SEPARATION_RADIUS = 48.f;
 
 const float EVASION = 64.f;
 
-const float MAX_SPEED = 0.07f;
+const float MAX_SPEED = 0.08f;
 const float FRICTION = 0.9f;
 
 const float W_FEAR = 9.0f;

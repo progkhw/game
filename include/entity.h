@@ -29,5 +29,6 @@ public:
     void updateAnimation(int stepByX, int moveToLeft, int moveToRight, int moveToUp, int moveToDown, float time);
 
     Vector getPosition() const;
+    void setPosition(const Vector& newPosition);
     bool isColliding(float testX, float testY, const Game& game, bool canPassToZagon = false);
 };
