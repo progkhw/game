@@ -1,5 +1,5 @@
 {
-    "time": 50,
+    "time": 35,
 
     "playerSpawn": [3, 2],
 
@@ -14,18 +14,18 @@
     "map": [
         "00000000000000000000",
         "0 s      s         0",
-        "0ss  s s kk    ss  0",
-        "0         k    s  s0",
-        "0    s s   s       0",
-        "0kkk       k s  s  0",
+        "0ss  s s ttt   ss  0",
+        "0    t    k   ts  s0",
+        "0    s s   s   tss 0",
+        "0kkk       k ssst  0",
         "0     s s  k       0",
-        "0          s   s   0",
-        "0s  sk           s 0",
-        "0    ks s  kss kk  0",
-        "0    k      s   ks 0",
-        "0iiis s skkks   s  0",
-        "0iii s ss     s s  0",
-        "0iii       s s     0",
+        "0          s   stt 0",
+        "0s  s              0",
+        "0    ts s  ttsstt  0",
+        "0    t      s ss s 0",
+        "0iiis s sdkts   s  0",
+        "0iiiddddddt  dddddd0",
+        "0iiiddddddddddddddd0",
         "00000000000000000000"
     ]
 }

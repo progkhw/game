@@ -18,6 +18,9 @@ private:
     StatusSheep status = StatusSheep::Free;
     float timer = 0.f;
 
+    float bleatTimer = 0.f;
+    float nextBleatTime = 0.f;
+
 public:
     Sheep(float x, float y, float w, float h, const sf::Texture& name);
 
@@ -32,4 +35,5 @@ public:
 
     StatusSheep getStatus() const;
     void updateZagonStatus(const Game& game, float time);
+    bool shouldBleat();
 };

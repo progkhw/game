@@ -1,6 +1,7 @@
 #include "game.h"
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <nlohmann/json.hpp>
 #include <iostream>
 #include <vector>
@@ -19,10 +20,44 @@ Game::Game() :
 
     state = GameState::MainMenu;
 
+    if (!mainMusic.openFromFile("./assets/music/mainMusic.ogg")) {
+        std::cerr << "музыка для фона не загружена\n";
+    }
+    mainMusic.setLoop(true);
+    mainMusic.play();
+
+    if (!levelCompl.loadFromFile("./assets/music/victorySound.ogg")) {
+        std::cerr << "звук победы не загружен\n";
+    }
+    if (!levelFail.loadFromFile("./assets/music/defeatSound.ogg")) {
+        std::cerr << "звук поражения не загружен\n";
+    }
+    if (!buttonTouchingB.loadFromFile("./assets/music/touchButton.ogg")) {
+        std::cerr << "звук нажатия на кнопку не загружен\n";
+    }
+
+    bleatingsB.reserve(3);
+    for (size_t i = 0; i < 3; ++i) {
+        bleatingsB.emplace_back();
+        std::string nameOfFile = "./assets/music/bleating" + std::to_string(i) + ".ogg";
+        if (!bleatingsB.back().loadFromFile(nameOfFile)) {
+            std::cerr << "звук блеяния " << i << " не загружен\n";
+        }
+    }
+
+    buttonTouching.setBuffer(buttonTouchingB);
+    levelCompleting.setBuffer(levelCompl);
+    levelFailing.setBuffer(levelFail);
+    bleatings.reserve(3);
+    for (size_t i = 0; i < 3; ++i) {
+        bleatings.emplace_back();
+        bleatings.back().setBuffer(bleatingsB[i]);
+    }
+
     view.reset(sf::FloatRect(0, 0, 640, 480));
     hudView.reset(sf::FloatRect(0, 0, 640, 480));
     s_map.setTexture(assets.get("map"));
-    font.loadFromFile("./assets/handgeschrieben.ttf");
+    font.loadFromFile("./assets/fonts/handgeschrieben.ttf");
 
     bool loading = loadLevel("./levels/level2.json");
     if (!loading) {
@@ -161,7 +196,7 @@ void Game::renderMainMenu() {
     window.clear();
     
     sf::Sprite menuBack;
-    sf::Text title1, title2, title3;
+    sf::Text title1, title2, title3, title4;
 
     menuBack.setTexture(assets.get("mainMenu"));
 
@@ -181,11 +216,18 @@ void Game::renderMainMenu() {
     title3.setCharacterSize(40);
     title3.setFillColor(sf::Color::White);
     title3.setPosition(0, 0);
-    title3.setString("Exit");
+    title3.setString("Settings");
+
+    title4.setFont(font);
+    title4.setCharacterSize(40);
+    title4.setFillColor(sf::Color::White);
+    title4.setPosition(0, 0);
+    title4.setString("Exit");
 
     title1.setPosition(100, 30);
     title2.setPosition(100, 80);
     title3.setPosition(100, 130);
+    title4.setPosition(100, 180);
     menuBack.setPosition(0, 0);
 
     sf::Vector2i mousePos = sf::Mouse::getPosition(window);
@@ -198,7 +240,10 @@ void Game::renderMainMenu() {
         title2.setFillColor(sf::Color::Blue);
     }
     if (sf::FloatRect(100.f, 130.f, 170.f, 50.f).contains(mousePosition)) {
-        title3.setFillColor(sf::Color::Green);
+        title3.setFillColor(sf::Color::Blue);
+    }
+    if (sf::FloatRect(100.f, 180.f, 170.f, 50.f).contains(mousePosition)) {
+        title4.setFillColor(sf::Color::Red);
     }
 
     window.draw(menuBack);
@@ -206,6 +251,7 @@ void Game::renderMainMenu() {
     window.draw(title1);
     window.draw(title2);
     window.draw(title3);
+    window.draw(title4);
 
     window.display();
 }
@@ -270,6 +316,117 @@ void Game::renderLevelSelect() {
     window.draw(level1);
     window.draw(level2);
     window.draw(level3);
+    window.draw(back);
+
+    window.display();
+}
+
+void Game::renderRecords() {
+    window.setView(hudView);
+    window.clear();
+
+    sf::Sprite recordsBack;
+    recordsBack.setTexture(assets.get("recordsBack"));
+
+    sf::Text back;
+    back.setFont(font);
+    back.setCharacterSize(40);
+    back.setFillColor(sf::Color::White);
+    back.setPosition(280, 200);
+    back.setString("Back");
+
+    std::ifstream inp("./levels/records.json"); 
+    if (!inp.is_open()) {
+        std::cout << "не удалось открыть файл для записи рекорда\n";
+    }
+    json parser;
+    inp >> parser;
+    inp.close();
+
+    sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+    sf::Vector2f mousePosition = window.mapPixelToCoords(mousePos, hudView);
+    if (sf::FloatRect(280.f, 200.f, 70.f, 50.f).contains(mousePosition)) {
+        back.setFillColor(sf::Color::Red);
+    }
+
+    window.draw(recordsBack);
+
+    sf::Vector2f startPosition(280.f, 50.f);
+    for (int i = 0; i < parser.size(); ++i) {
+        std::string levelIndex = "level" + std::to_string(i + 1);
+        std::string levelData = levelIndex + ": ";
+        if (parser[levelIndex].get<float>() == 0.f) {
+            levelData += "no record";
+        }
+        else {
+            std::ostringstream stream;
+            stream << std::fixed << std::setprecision(1) << parser[levelIndex].get<float>();
+            levelData += stream.str();
+        }
+        sf::Text currentLevelText;
+        currentLevelText.setFont(font);
+        currentLevelText.setCharacterSize(40);
+        currentLevelText.setFillColor(sf::Color{255, 80, 0});
+        currentLevelText.setPosition(startPosition);
+        currentLevelText.setString(levelData);
+        startPosition.y += 50.f;
+        window.draw(currentLevelText);
+    }
+
+    window.draw(back);
+    window.display();
+}
+
+void Game::renderSettings() {
+    window.setView(hudView);
+    window.clear();
+    
+    sf::Sprite settingsBack;
+    sf::Text title1, title2, back;
+
+    std::string on = "on";
+    std::string off = "off";
+    std::string text1 = "Sound: " + (isSoundEnabled ? on : off);
+    title1.setFont(font);
+    title1.setCharacterSize(40);
+    title1.setFillColor(sf::Color::White);
+    title1.setPosition(100.f, 30.f);
+    title1.setString(text1);
+   
+    std::string text2 = "Music: " + (isMusicEnabled ? on : off);
+    title2.setFont(font);
+    title2.setCharacterSize(40);
+    title2.setFillColor(sf::Color::White);
+    title2.setPosition(100.f, 80.f);
+    title2.setString(text2);
+
+    back.setFont(font);
+    back.setCharacterSize(40);
+    back.setFillColor(sf::Color::White);
+    back.setPosition(100.f, 130.f);
+    back.setString("Back");
+
+    settingsBack.setTexture(assets.get("levelBack"));
+
+    settingsBack.setPosition(0, 0);
+
+    sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+    sf::Vector2f mousePosition = window.mapPixelToCoords(mousePos, hudView);
+
+    if (sf::FloatRect(100.f, 30.f, 170.f, 50.f).contains(mousePosition)) {
+        title1.setFillColor(sf::Color::Blue);
+    }
+    if (sf::FloatRect(100.f, 80.f, 170.f, 50.f).contains(mousePosition)) {
+        title2.setFillColor(sf::Color::Blue);
+    }
+    if (sf::FloatRect(100.f, 130.f, 170.f, 50.f).contains(mousePosition)) {
+        back.setFillColor(sf::Color::Red);
+    }
+
+    window.draw(settingsBack);
+
+    window.draw(title1);
+    window.draw(title2);
     window.draw(back);
 
     window.display();
@@ -367,20 +524,16 @@ void Game::renderVictory() {
     player.draw(window);
     window.setView(window.getDefaultView());
     
-    sf::Sprite buttonToHome, buttonToRestart;
+    sf::Sprite victory, buttonToHome, buttonToRestart;
+    victory.setTexture(assets.get("buttonsGame"));
+    victory.setTextureRect(sf::IntRect(0, 32, 144, 64));
+    victory.setPosition(249, 176);
     buttonToHome.setTexture(assets.get("buttonsGame"));
-    buttonToRestart.setTexture(assets.get("buttonsGame"));
     buttonToHome.setTextureRect(sf::IntRect(32, 0, 32, 32));
-    buttonToRestart.setTextureRect(sf::IntRect(0, 0, 32, 32));
     buttonToHome.setPosition(280, 250);
+    buttonToRestart.setTexture(assets.get("buttonsGame"));
+    buttonToRestart.setTextureRect(sf::IntRect(0, 0, 32, 32));
     buttonToRestart.setPosition(328, 250);
-
-    sf::Text victory;
-    victory.setFont(font);
-    victory.setCharacterSize(72);
-    victory.setFillColor(sf::Color::Cyan);
-    victory.setPosition(200, 155);
-    victory.setString("Victory!");
 
     window.setView(hudView);
     window.draw(availableTime);
@@ -431,14 +584,26 @@ void Game::renderDefeat() {
         sheeps[i].draw(window);
     }
     
-
     player.draw(window);
-
     window.setView(window.getDefaultView());
+
+    sf::Sprite defeat, buttonToHome, buttonToRestart;
+    defeat.setTexture(assets.get("buttonsGame"));
+    defeat.setTextureRect(sf::IntRect(144, 32, 144, 64));
+    defeat.setPosition(249, 176);
+    buttonToHome.setTexture(assets.get("buttonsGame"));
+    buttonToHome.setTextureRect(sf::IntRect(32, 0, 32, 32));
+    buttonToHome.setPosition(280, 250);
+    buttonToRestart.setTexture(assets.get("buttonsGame"));
+    buttonToRestart.setTextureRect(sf::IntRect(0, 0, 32, 32));
+    buttonToRestart.setPosition(328, 250);
 
     window.setView(hudView);
     window.draw(availableTime);
     window.draw(countOfSheep);
+    window.draw(defeat);
+    window.draw(buttonToRestart);
+    window.draw(buttonToHome);
 
     window.display();
 }
@@ -510,12 +675,24 @@ void Game::render() {
             renderLevelSelect();
             break;
         }
+        case GameState::Records : {
+            renderRecords();
+            break;
+        }
+        case GameState::Settings : {
+            renderSettings();
+            break;
+        }
         case GameState::Playing : {
             renderPlaying();
             break;
         }
         case GameState::Victory : {
             renderVictory();
+            break;
+        }
+        case GameState::Defeat : {
+            renderDefeat();
             break;
         }
         case GameState::Pause : {
@@ -549,6 +726,18 @@ void Game::run() {
                     }
                     else if (state == GameState::LevelSelect) {
                         handleLevelSelectClick(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
+                    }
+                    else if (state == GameState::Settings) {
+                        handleSettingsClick(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
+                    }
+                    else if (state == GameState::Victory) {
+                        handleVictoryClick(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
+                    }
+                    else if (state == GameState::Defeat) {
+                        handleDefeatClick(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
+                    }
+                    else if (state == GameState::Records) {
+                        handleRecordsClick(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
                     }
                 }
             }
@@ -595,11 +784,18 @@ void Game::run() {
 
             if (isGameEnd()) {
                 std::cout << "the game is end, you are victory!\n";
+                if (isSoundEnabled) {
+                    levelCompleting.play();
+                }
+                updateRecord(currentTime);
                 state = GameState::Victory;
             }
             else if (levelTime - currentTime <= 0.f) {
                 std::cout << "the game is defeat...\n";
                 state = GameState::Defeat;
+                if (isSoundEnabled) {
+                    levelFailing.play();
+                }
             }
             else if (state == GameState::Playing) {
                 Vector direction;
@@ -621,6 +817,12 @@ void Game::run() {
                 player.update(time, *this);
                 for (int i = 0; i < sheeps.size(); ++i) {
                     sheeps[i].update(time, *this);
+                    if (isSoundEnabled) {
+                        if (sheeps[i].shouldBleat()) {
+                            int i = std::rand() % 3;
+                            bleatings[i].play();                        
+                        }
+                    }
                 }
 
                 float tempX = player.getPosition().x;
@@ -658,41 +860,219 @@ void Game::run() {
 void Game::handleMainMenuClick(sf::Vector2i coord) {
     sf::Vector2f mousePosition = window.mapPixelToCoords(coord, hudView);
     if (sf::FloatRect(100.f, 30.f, 170.f, 50.f).contains(mousePosition)) {
+        if (isSoundEnabled) {
+            buttonTouching.play();
+        }
         state = GameState::LevelSelect;
     }
     if (sf::FloatRect(100.f, 80.f, 170.f, 50.f).contains(mousePosition)) {
+        if (isSoundEnabled) {
+            buttonTouching.play();
+        }
         state = GameState::Records;
     }
     if (sf::FloatRect(100.f, 130.f, 170.f, 50.f).contains(mousePosition)) {
+        if (isSoundEnabled) {
+            buttonTouching.play();
+        }
+        state = GameState::Settings;
+    }
+    if (sf::FloatRect(100.f, 180.f, 170.f, 50.f).contains(mousePosition)) {
+        if (isSoundEnabled) {
+            buttonTouching.play();
+        }
         state = GameState::Exit;
+    }
+}
+
+void Game::handleSettingsClick(sf::Vector2i coord) {
+    sf::Vector2f mousePosition = window.mapPixelToCoords(coord, hudView);
+    if (sf::FloatRect(100.f, 30.f, 170.f, 50.f).contains(mousePosition)) {
+        if (isSoundEnabled) {
+            buttonTouching.play();
+        }
+
+        isSoundEnabled = isSoundEnabled ? false : true;
+
+        if (!isSoundEnabled) {
+            buttonTouching.stop();
+            levelCompleting.stop();
+            levelFailing.stop();
+
+            for (auto& i : bleatings) {
+                i.stop();
+            }
+        }
+    }
+    if (sf::FloatRect(100.f, 80.f, 170.f, 50.f).contains(mousePosition)) {
+        if (isSoundEnabled) {
+            buttonTouching.play();
+        }
+
+        isMusicEnabled = isMusicEnabled ? false : true;
+        if (isMusicEnabled) {
+            mainMusic.play();
+        }
+        else {
+            mainMusic.pause();
+        }
+    }
+    if (sf::FloatRect(100.f, 130.f, 170.f, 50.f).contains(mousePosition)) {
+        if (isSoundEnabled) {
+            buttonTouching.play();
+        }
+
+        state = GameState::MainMenu;
     }
 }
 
 void Game::handleLevelSelectClick(sf::Vector2i coord) {
     sf::Vector2f mousePosition = window.mapPixelToCoords(coord, hudView);
     if (sf::FloatRect(100.f, 30.f, 170.f, 50.f).contains(mousePosition)) {
+        if (isSoundEnabled) {
+            buttonTouching.play();
+        }
+
         if (loadLevel("./levels/level1.json")) {
             currentTime = 0.f;
             countOfSheepInZagon = 0;
             state = GameState::Playing;
+            currentLevelForRestart = "./levels/level1.json";
         }
     }
     if (sf::FloatRect(100.f, 80.f, 170.f, 50.f).contains(mousePosition)) {
+        if (isSoundEnabled) {
+            buttonTouching.play();
+        }
+
         if (loadLevel("./levels/level2.json")) {
             currentTime = 0.f;
             countOfSheepInZagon = 0;
             state = GameState::Playing;
+            currentLevelForRestart = "./levels/level2.json";
         }
     }
     if (sf::FloatRect(100.f, 130.f, 170.f, 50.f).contains(mousePosition)) {
+        if (isSoundEnabled) {
+            buttonTouching.play();
+        }
+
         if (loadLevel("./levels/level3.json")) {
+            currentTime = 0.f;
+            countOfSheepInZagon = 0;
+            state = GameState::Playing;
+            currentLevelForRestart = "./levels/level3.json";
+        }
+    }
+    if (sf::FloatRect(100.f, 180.f, 170.f, 50.f).contains(mousePosition)) {
+        if (isSoundEnabled) {
+            buttonTouching.play();
+        }
+
+        state = GameState::MainMenu;
+    }
+}
+
+void Game::handleVictoryClick(sf::Vector2i coord) {
+    sf::Vector2f mousePosition = window.mapPixelToCoords(coord, hudView);
+    if (sf::FloatRect(280.f, 250.f, 32.f, 32.f).contains(mousePosition)) {
+        if (isSoundEnabled) {
+            buttonTouching.play();
+        }
+
+        state = GameState::MainMenu;
+    }
+    if (sf::FloatRect(328.f, 250.f, 32.f, 32.f).contains(mousePosition)) {
+        if (isSoundEnabled) {
+            buttonTouching.play();
+        }
+
+        if (loadLevel(currentLevelForRestart)) {
             currentTime = 0.f;
             countOfSheepInZagon = 0;
             state = GameState::Playing;
         }
     }
-    if (sf::FloatRect(100.f, 180.f, 170.f, 50.f).contains(mousePosition)) {
+}
+
+void Game::handleDefeatClick(sf::Vector2i coord) {
+    sf::Vector2f mousePosition = window.mapPixelToCoords(coord, hudView);
+    if (sf::FloatRect(280.f, 250.f, 32.f, 32.f).contains(mousePosition)) {
+        if (isSoundEnabled) {
+            buttonTouching.play();
+        }
+
         state = GameState::MainMenu;
     }
+    if (sf::FloatRect(328.f, 250.f, 32.f, 32.f).contains(mousePosition)) {
+        if (isSoundEnabled) {
+            buttonTouching.play();
+        }
 
+        if (loadLevel(currentLevelForRestart)) {
+            currentTime = 0.f;
+            countOfSheepInZagon = 0;
+            state = GameState::Playing;
+        }
+    }
+}
+
+void Game::handleRecordsClick(sf::Vector2i coord) {
+    sf::Vector2f mousePosition = window.mapPixelToCoords(coord, hudView);
+    if (sf::FloatRect(280.f, 200.f, 70.f, 50.f).contains(mousePosition)) {
+        if (isSoundEnabled) {
+            buttonTouching.play();
+        }
+
+        state = GameState::MainMenu;
+    }
+}
+
+void Game::updateRecord(float timeOfLevel) {
+    std::ifstream inp("./levels/records.json"); 
+    if (!inp.is_open()) {
+        std::cout << "не удалось открыть файл для записи рекорда\n";
+        return;
+    }
+
+    json parser;
+    inp >> parser;
+    inp.close();
+
+    std::string numOfLevel = getLevelFromPath(currentLevelForRestart);
+    if (numOfLevel.empty()) {
+        return;
+    }
+
+    if (!parser.contains(numOfLevel)) {
+        return;
+    }
+    float recordTime = parser[numOfLevel].get<float>();
+    if (recordTime > timeOfLevel || recordTime == 0.f) {
+        parser[numOfLevel] = timeOfLevel;
+
+        std::ofstream out("./levels/records.json");
+        if (!out.is_open()) {
+            std::cout << "не удалось открыть файл для записи рекорда\n";
+            return;
+        }
+
+        out << parser;
+    }
+}
+
+std::string Game::getLevelFromPath(const std::string& str) {
+    size_t posStart = str.find("level", str.find("level") + 1);
+    if (posStart == std::string::npos) {
+        return "";
+    }
+
+    size_t posEnd = str.find(".json");
+    if (posEnd == std::string::npos) { 
+        return "";
+    }
+
+    std::string name = str.substr(posStart, posEnd - posStart);
+
+    return name;
 }

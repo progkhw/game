@@ -4,6 +4,8 @@
 #include "game.h"
 
 #include <cmath>
+#include <cstdlib>
+#include <ctime>
 #include "vector.h"
 #include <optional>
 
@@ -30,6 +32,8 @@ struct DirectionCandidate {
 // конструктор с параметрами для Sheep
 Sheep::Sheep(float x, float y, float w, float h, const sf::Texture& name) : Entity(x, y, w, h, name) {
     hitbox = sf::FloatRect(-12.f, -10.f, 24.f, 10.f);
+
+    nextBleatTime = std::rand() % 7001 + 5000;
 }
 
 Vector Sheep::calculateFear(const Player& player) const {
@@ -213,6 +217,8 @@ void Sheep::update(float time, Game& game) {
         return;
     }
 
+    bleatTimer += time;
+
     Player& player = game.getPlayer();
     std::vector<Sheep>& sheeps = game.getSheeps();
     Vector dir(0.f, 0.f);
@@ -268,4 +274,18 @@ void Sheep::update(float time, Game& game) {
     }
 
     sprite.setPosition(position.x, position.y);
+}
+
+bool Sheep::shouldBleat() {
+    if (status == StatusSheep::InZagon) {
+        return false;
+    }
+
+    if (bleatTimer < nextBleatTime) {
+        return false;
+    }
+
+    bleatTimer = 0.f;
+    nextBleatTime = std::rand() % 7001 + 5000;
+    return true;
 }

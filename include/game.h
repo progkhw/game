@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 
 #include "entity.h"
 #include "player.h"
@@ -26,6 +27,7 @@ public:
         textures["mainMenu"].loadFromFile("./assets/mainMenu.png");
         textures["levelBack"].loadFromFile("./assets/levelBack.png");
         textures["buttonsGame"].loadFromFile("./assets/buttonsGame.png");
+        textures["recordsBack"].loadFromFile("./assets/recordsBack.png");
     }
 
     const sf::Texture& get(const std::string& name) {
@@ -37,6 +39,7 @@ enum class GameState {
     MainMenu,
     LevelSelect,
     Records,
+    Settings,
     Playing,
     Victory,
     Defeat,
@@ -57,9 +60,24 @@ private:
     std::vector<Obstacle> obstacles;
     int countOfSheepInZagon = 0;
 
+    std::string currentLevelForRestart;
+
     sf::Font font;
     sf::Text availableTime;
     sf::Text countOfSheep;
+
+    sf::Music mainMusic;
+    sf::SoundBuffer buttonTouchingB;
+    sf::SoundBuffer levelCompl;
+    sf::SoundBuffer levelFail;
+    std::vector<sf::SoundBuffer> bleatingsB;
+    sf::Sound buttonTouching;
+    sf::Sound levelCompleting;
+    sf::Sound levelFailing;
+    std::vector<sf::Sound> bleatings;
+
+    bool isMusicEnabled = true;
+    bool isSoundEnabled = true;
 
     sf::Sprite s_map;
     sf::View view;
@@ -72,6 +90,7 @@ private:
     void renderMainMenu();
     void renderLevelSelect();
     void renderRecords();
+    void renderSettings();
     void renderPlaying();
     void renderVictory();
     void renderDefeat();
@@ -92,6 +111,13 @@ public:
 
     void run();
     void handleMainMenuClick(sf::Vector2i coord);
+    void handleSettingsClick(sf::Vector2i coord);
     void handleLevelSelectClick(sf::Vector2i coord);
+    void handleVictoryClick(sf::Vector2i coord);
+    void handleDefeatClick(sf::Vector2i coord);
+    void handleRecordsClick(sf::Vector2i coord);
     void render();
+
+    void updateRecord(float timeOfLevel);
+    std::string getLevelFromPath(const std::string& str);
 };

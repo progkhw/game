@@ -20,4 +20,4 @@ add_executable(otara
 )
 
 target_include_directories(otara PRIVATE include)
-target_link_libraries(otara PRIVATE sfml-graphics sfml-window sfml-system)
+target_link_libraries(otara PRIVATE sfml-graphics sfml-audio sfml-window sfml-system)
