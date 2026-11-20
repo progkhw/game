@@ -214,6 +214,7 @@ void Sheep::updateZagonStatus(const Game& game, float time) {
 void Sheep::update(float time, Game& game) {
     if (status == StatusSheep::InZagon) {
         sprite.setPosition(position.x, position.y);
+        sprite.setColor(sf::Color(200, 255, 255));
         return;
     }
 

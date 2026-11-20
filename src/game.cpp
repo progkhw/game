@@ -66,13 +66,20 @@ Game::Game() :
 
     availableTime.setFont(font);
     availableTime.setCharacterSize(24);
-    availableTime.setFillColor(sf::Color::Black);
+    availableTime.setFillColor(sf::Color{0, 204, 204});
     availableTime.setPosition(0, 0);
 
     countOfSheep.setFont(font);
     countOfSheep.setCharacterSize(24);
-    countOfSheep.setFillColor(sf::Color::Black);
-    countOfSheep.setPosition(40, 0);
+    countOfSheep.setFillColor(sf::Color{0, 204, 204});
+    countOfSheep.setPosition(60, 0);
+
+    currentLevel.setFont(font);
+    currentLevel.setCharacterSize(24);
+    currentLevel.setFillColor(sf::Color{0, 204, 204});
+    currentLevel.setPosition(140, 0);
+
+    //window.close();
 }
 
 bool Game::loadLevel(const std::string& path) {
@@ -267,21 +274,37 @@ void Game::renderLevelSelect() {
 
     level1.setFont(font);
     level1.setCharacterSize(40);
-    level1.setFillColor(sf::Color::White);
     level1.setPosition(0, 0);
     level1.setString("Level 1");
+    if (!isThisLevelAvailable("./levels/level1.json")) {
+        level1.setFillColor(sf::Color::Red);
+    }
+    else {
+        level1.setFillColor(sf::Color::White);
+    }
 
     level2.setFont(font);
     level2.setCharacterSize(40);
-    level2.setFillColor(sf::Color::White);
     level2.setPosition(0, 0);
     level2.setString("Level 2");
+    if (!isThisLevelAvailable("./levels/level2.json")) {
+        level2.setFillColor(sf::Color::Red);
+    }
+    else {
+        level2.setFillColor(sf::Color::White);
+    }
 
     level3.setFont(font);
     level3.setCharacterSize(40);
-    level3.setFillColor(sf::Color::White);
     level3.setPosition(0, 0);
     level3.setString("Level 3");
+    if (!isThisLevelAvailable("./levels/level3.json")) {
+        level3.setFillColor(sf::Color::Red);
+    }
+    else {
+        level3.setFillColor(sf::Color::White);
+    }
+
 
     back.setFont(font);
     back.setCharacterSize(40);
@@ -299,13 +322,19 @@ void Game::renderLevelSelect() {
     sf::Vector2f mousePosition = window.mapPixelToCoords(mousePos, hudView);
 
     if (sf::FloatRect(100.f, 30.f, 170.f, 50.f).contains(mousePosition)) {
-        level1.setFillColor(sf::Color::Green);
+        if (isThisLevelAvailable("./levels/level1.json")) {
+            level1.setFillColor(sf::Color::Green);
+        }
     }
     if (sf::FloatRect(100.f, 80.f, 170.f, 50.f).contains(mousePosition)) {
-        level2.setFillColor(sf::Color::Green);
+        if (isThisLevelAvailable("./levels/level2.json")) {
+            level2.setFillColor(sf::Color::Green);
+        }
     }
     if (sf::FloatRect(100.f, 130.f, 170.f, 50.f).contains(mousePosition)) {
-        level3.setFillColor(sf::Color::Green);
+        if (isThisLevelAvailable("./levels/level3.json")) {
+            level3.setFillColor(sf::Color::Green);
+        }
     }
     if (sf::FloatRect(100.f, 180.f, 170.f, 50.f).contains(mousePosition)) {
         back.setFillColor(sf::Color::Red);
@@ -474,9 +503,12 @@ void Game::renderPlaying() {
 
     player.draw(window);
 
+    std::string currLevel = getLevelFromPath(currentLevelForRestart);
+    currentLevel.setString(currLevel);
     window.setView(window.getDefaultView());
-
     window.setView(hudView);
+
+    window.draw(currentLevel);
     window.draw(availableTime);
     window.draw(countOfSheep);
 
@@ -527,15 +559,33 @@ void Game::renderVictory() {
     sf::Sprite victory, buttonToHome, buttonToRestart;
     victory.setTexture(assets.get("buttonsGame"));
     victory.setTextureRect(sf::IntRect(0, 32, 144, 64));
-    victory.setPosition(249, 176);
+    victory.setPosition(249, 170);
     buttonToHome.setTexture(assets.get("buttonsGame"));
     buttonToHome.setTextureRect(sf::IntRect(32, 0, 32, 32));
-    buttonToHome.setPosition(280, 250);
+    buttonToHome.setPosition(280, 270);
     buttonToRestart.setTexture(assets.get("buttonsGame"));
     buttonToRestart.setTextureRect(sf::IntRect(0, 0, 32, 32));
-    buttonToRestart.setPosition(328, 250);
+    buttonToRestart.setPosition(328, 270);
+
+    sf::Text resultTime;
+    resultTime.setFont(font);
+    resultTime.setCharacterSize(24);
+    resultTime.setFillColor(sf::Color::Black);
+    std::string resultTimeText;
+    std::ostringstream stream;
+    stream << std::fixed << std::setprecision(1) << currentTime;
+    resultTimeText += stream.str();
+    resultTime.setString(resultTimeText);
+    sf::FloatRect bounds = resultTime.getLocalBounds();
+    resultTime.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
+    resultTime.setPosition(320, 240);
 
     window.setView(hudView);
+
+    std::string currLevel = getLevelFromPath(currentLevelForRestart);
+    currentLevel.setString(currLevel);
+    window.draw(currentLevel);
+    window.draw(resultTime);
     window.draw(availableTime);
     window.draw(countOfSheep);
     window.draw(victory);
@@ -599,6 +649,11 @@ void Game::renderDefeat() {
     buttonToRestart.setPosition(328, 250);
 
     window.setView(hudView);
+
+    std::string currLevel = getLevelFromPath(currentLevelForRestart);
+    currentLevel.setString(currLevel);
+    window.draw(currentLevel);
+
     window.draw(availableTime);
     window.draw(countOfSheep);
     window.draw(defeat);
@@ -658,6 +713,11 @@ void Game::renderPause() {
     pause.setString("PAUSE");
 
     window.setView(hudView);
+
+    std::string currLevel = getLevelFromPath(currentLevelForRestart);
+    currentLevel.setString(currLevel);
+    window.draw(currentLevel);
+
     window.draw(availableTime);
     window.draw(countOfSheep);
     window.draw(pause);
@@ -933,11 +993,13 @@ void Game::handleLevelSelectClick(sf::Vector2i coord) {
             buttonTouching.play();
         }
 
-        if (loadLevel("./levels/level1.json")) {
-            currentTime = 0.f;
-            countOfSheepInZagon = 0;
-            state = GameState::Playing;
-            currentLevelForRestart = "./levels/level1.json";
+        if (isThisLevelAvailable("./levels/level1.json")) {
+            if (loadLevel("./levels/level1.json")) {
+                currentTime = 0.f;
+                countOfSheepInZagon = 0;
+                state = GameState::Playing;
+                currentLevelForRestart = "./levels/level1.json";
+            }
         }
     }
     if (sf::FloatRect(100.f, 80.f, 170.f, 50.f).contains(mousePosition)) {
@@ -945,11 +1007,13 @@ void Game::handleLevelSelectClick(sf::Vector2i coord) {
             buttonTouching.play();
         }
 
-        if (loadLevel("./levels/level2.json")) {
-            currentTime = 0.f;
-            countOfSheepInZagon = 0;
-            state = GameState::Playing;
-            currentLevelForRestart = "./levels/level2.json";
+        if (isThisLevelAvailable("./levels/level2.json")) {
+            if (loadLevel("./levels/level2.json")) {
+                currentTime = 0.f;
+                countOfSheepInZagon = 0;
+                state = GameState::Playing;
+                currentLevelForRestart = "./levels/level2.json";
+            }
         }
     }
     if (sf::FloatRect(100.f, 130.f, 170.f, 50.f).contains(mousePosition)) {
@@ -957,11 +1021,14 @@ void Game::handleLevelSelectClick(sf::Vector2i coord) {
             buttonTouching.play();
         }
 
-        if (loadLevel("./levels/level3.json")) {
-            currentTime = 0.f;
-            countOfSheepInZagon = 0;
-            state = GameState::Playing;
-            currentLevelForRestart = "./levels/level3.json";
+        
+        if (isThisLevelAvailable("./levels/level3.json")) {
+            if (loadLevel("./levels/level3.json")) {
+                currentTime = 0.f;
+                countOfSheepInZagon = 0;
+                state = GameState::Playing;
+                currentLevelForRestart = "./levels/level3.json";
+            }
         }
     }
     if (sf::FloatRect(100.f, 180.f, 170.f, 50.f).contains(mousePosition)) {
@@ -975,14 +1042,14 @@ void Game::handleLevelSelectClick(sf::Vector2i coord) {
 
 void Game::handleVictoryClick(sf::Vector2i coord) {
     sf::Vector2f mousePosition = window.mapPixelToCoords(coord, hudView);
-    if (sf::FloatRect(280.f, 250.f, 32.f, 32.f).contains(mousePosition)) {
+    if (sf::FloatRect(280.f, 270.f, 32.f, 32.f).contains(mousePosition)) {
         if (isSoundEnabled) {
             buttonTouching.play();
         }
 
         state = GameState::MainMenu;
     }
-    if (sf::FloatRect(328.f, 250.f, 32.f, 32.f).contains(mousePosition)) {
+    if (sf::FloatRect(328.f, 270.f, 32.f, 32.f).contains(mousePosition)) {
         if (isSoundEnabled) {
             buttonTouching.play();
         }
@@ -1075,4 +1142,42 @@ std::string Game::getLevelFromPath(const std::string& str) {
     std::string name = str.substr(posStart, posEnd - posStart);
 
     return name;
+}
+
+bool Game::isThisLevelAvailable(const std::string& level) {
+    std::string currentLevel = getLevelFromPath(level);
+    if (currentLevel == "level1") {
+        return true;
+    }
+    else if (currentLevel == "") {
+        return false;
+    }
+
+    std::ifstream inp("./levels/records.json"); 
+    if (!inp.is_open()) {
+        std::cout << "не удалось открыть файл для записи рекорда\n";
+        return false;
+    }
+
+    json parser;
+    inp >> parser;
+    inp.close();
+
+    try {
+        currentLevel = "level" + std::to_string(std::stoi(currentLevel.replace(0, 5, "")) - 1);
+    }
+    catch (const std::invalid_argument& er) {
+        std::cerr << "ошибка: строка не является числом\n";
+        return false;
+    }
+    catch (const std::out_of_range& er) {
+        std::cerr << "ошибка: число вне диапазона\n";
+        return false;
+    }
+
+    if (parser.contains(currentLevel) && parser[currentLevel].get<float>() > 0.f) {
+        return true;
+    }
+
+    return false;
 }

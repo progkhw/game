@@ -52,7 +52,7 @@ private:
     sf::RenderWindow window;
     AssetManager assets;
     GameState state;
-    float levelTime = 50.f;
+    float levelTime = 0.f;
     float currentTime = 0.f;
 
     Player player;
@@ -65,6 +65,7 @@ private:
     sf::Font font;
     sf::Text availableTime;
     sf::Text countOfSheep;
+    sf::Text currentLevel;
 
     sf::Music mainMusic;
     sf::SoundBuffer buttonTouchingB;
@@ -119,5 +120,6 @@ public:
     void render();
 
     void updateRecord(float timeOfLevel);
+    bool isThisLevelAvailable(const std::string& level);
     std::string getLevelFromPath(const std::string& str);
 };
