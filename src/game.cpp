@@ -70,6 +70,8 @@ Game::Game() :
     view.reset(sf::FloatRect(0, 0, 640, 480));
     hudView.reset(sf::FloatRect(0, 0, 640, 480));
     s_map.setTexture(assets.get("map"));
+    zagon.setTexture(assets.get("map"));
+    zagon.setTextureRect(sf::IntRect(0, 32, 160, 160));
     font.loadFromFile("./assets/fonts/handgeschrieben.ttf");
 
     bool loading = loadLevel("./levels/level2.json");
@@ -110,6 +112,7 @@ bool Game::loadLevel(const std::string& path) {
     levelTime = parser["time"].get<float>();
     std::pair<int, int> playerSpawnCoor = parser["playerSpawn"].get<std::pair<int, int>>();
     std::vector<std::pair<int, int>> sheepSpawnCoor;
+    zagonSpawn = parser["zagonSpawn"].get<std::pair<float, float>>();
     for (const auto& sheepCoor : parser["sheepSpawn"]) {
         sheepSpawnCoor.push_back(sheepCoor.get<std::pair<int, int>>());
     }
@@ -131,6 +134,7 @@ bool Game::loadLevel(const std::string& path) {
     }
 
     player.setPosition(Vector(playerSpawnCoor.first * TILE_SIZE, playerSpawnCoor.second * TILE_SIZE));
+    zagon.setPosition(zagonSpawn.first * 32, zagonSpawn.second * 32);
     sheeps.clear();
     for (const auto& i : sheepSpawnCoor) {
         Sheep sheep(i.first * TILE_SIZE, i.second * TILE_SIZE, 32, 32, assets.get("sheep"));
@@ -161,7 +165,7 @@ bool Game::isSolid(int tx, int ty, bool canPassToZagon) const {
     }
 
     char c = tileMap[ty][tx];
-    return c == '0' || (!canPassToZagon && c == 'i');
+    return c == '0' || c == 'l' || (!canPassToZagon && c == 'i');
 }
 
 bool Game::isInTargetTile(float x, float y, char typeTile) const {
@@ -481,7 +485,7 @@ void Game::renderPlaying() {
     for (int i = 0; i < mapHeight; ++i) {
         for (int j = 0; j < mapWidth; ++j) {
             
-            if (tileMap[i][j] == ' ') {
+            if (tileMap[i][j] == ' ' || tileMap[i][j] == 'i' || tileMap[i][j] == 'l') {
                 s_map.setTextureRect(sf::IntRect(32, 0, 32, 32));
             }
             if (tileMap[i][j] == 's') {
@@ -495,9 +499,6 @@ void Game::renderPlaying() {
             }
             if (tileMap[i][j] == 'd') {
                 s_map.setTextureRect(sf::IntRect(160, 0, 32, 32));
-            }
-            if (tileMap[i][j] == 'i') {
-                s_map.setTextureRect(sf::IntRect(128, 0, 32, 32));
             }
             if (tileMap[i][j] == 't') {
                 s_map.setTextureRect(sf::IntRect(192, 0, 32, 32));
@@ -515,8 +516,7 @@ void Game::renderPlaying() {
     for (int i = 0; i < sheeps.size(); ++i) {
         sheeps[i].draw(window);
     }
-    
-
+    window.draw(zagon);
     player.draw(window);
 
     std::string currLevel = getLevelFromPath(currentLevelForRestart);
@@ -538,7 +538,7 @@ void Game::renderVictory() {
     for (int i = 0; i < mapHeight; ++i) {
         for (int j = 0; j < mapWidth; ++j) {
             
-            if (tileMap[i][j] == ' ') {
+            if (tileMap[i][j] == ' ' || tileMap[i][j] == 'i' || tileMap[i][j] == 'l') {
                 s_map.setTextureRect(sf::IntRect(32, 0, 32, 32));
             }
             if (tileMap[i][j] == 's') {
@@ -552,9 +552,6 @@ void Game::renderVictory() {
             }
             if (tileMap[i][j] == 'd') {
                 s_map.setTextureRect(sf::IntRect(160, 0, 32, 32));
-            }
-            if (tileMap[i][j] == 'i') {
-                s_map.setTextureRect(sf::IntRect(128, 0, 32, 32));
             }
             if (tileMap[i][j] == 't') {
                 s_map.setTextureRect(sf::IntRect(192, 0, 32, 32));
@@ -573,6 +570,7 @@ void Game::renderVictory() {
     for (int i = 0; i < sheeps.size(); ++i) {
         sheeps[i].draw(window);
     }
+    window.draw(zagon);
     player.draw(window);
     window.setView(window.getDefaultView());
     
@@ -622,7 +620,7 @@ void Game::renderDefeat() {
     for (int i = 0; i < mapHeight; ++i) {
         for (int j = 0; j < mapWidth; ++j) {
             
-            if (tileMap[i][j] == ' ') {
+            if (tileMap[i][j] == ' ' || tileMap[i][j] == 'i' || tileMap[i][j] == 'l') {
                 s_map.setTextureRect(sf::IntRect(32, 0, 32, 32));
             }
             if (tileMap[i][j] == 's') {
@@ -636,9 +634,6 @@ void Game::renderDefeat() {
             }
             if (tileMap[i][j] == 'd') {
                 s_map.setTextureRect(sf::IntRect(160, 0, 32, 32));
-            }
-            if (tileMap[i][j] == 'i') {
-                s_map.setTextureRect(sf::IntRect(128, 0, 32, 32));
             }
             if (tileMap[i][j] == 't') {
                 s_map.setTextureRect(sf::IntRect(192, 0, 32, 32));
@@ -657,7 +652,7 @@ void Game::renderDefeat() {
     for (int i = 0; i < sheeps.size(); ++i) {
         sheeps[i].draw(window);
     }
-    
+    window.draw(zagon);
     player.draw(window);
     window.setView(window.getDefaultView());
 
@@ -694,7 +689,7 @@ void Game::renderPause() {
     for (int i = 0; i < mapHeight; ++i) {
         for (int j = 0; j < mapWidth; ++j) {
             
-            if (tileMap[i][j] == ' ') {
+            if (tileMap[i][j] == ' ' || tileMap[i][j] == 'i' || tileMap[i][j] == 'l') {
                 s_map.setTextureRect(sf::IntRect(32, 0, 32, 32));
             }
             if (tileMap[i][j] == 's') {
@@ -708,9 +703,6 @@ void Game::renderPause() {
             }
             if (tileMap[i][j] == 'd') {
                 s_map.setTextureRect(sf::IntRect(160, 0, 32, 32));
-            }
-            if (tileMap[i][j] == 'i') {
-                s_map.setTextureRect(sf::IntRect(128, 0, 32, 32));
             }
             if (tileMap[i][j] == 't') {
                 s_map.setTextureRect(sf::IntRect(192, 0, 32, 32));
@@ -729,7 +721,7 @@ void Game::renderPause() {
     for (int i = 0; i < sheeps.size(); ++i) {
         sheeps[i].draw(window);
     }
-
+    window.draw(zagon);
     player.draw(window);
     window.setView(window.getDefaultView());
 

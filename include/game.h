@@ -58,6 +58,7 @@ private:
     Player player;
     std::vector<Sheep> sheeps;
     std::vector<Obstacle> obstacles;
+    std::pair<float, float> zagonSpawn;
     int countOfSheepInZagon = 0;
 
     std::string currentLevelForRestart;
@@ -83,6 +84,7 @@ private:
     bool isSoundEnabled = true;
 
     sf::Sprite s_map;
+    sf::Sprite zagon;
     sf::View view;
     sf::View hudView;
 

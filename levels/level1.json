@@ -11,6 +11,8 @@
         [3, 8]
     ],
 
+    "zagonSpawn": [1, 9],
+
     "map": [
         "00000000000000000000",
         "0 s      s         0",
@@ -21,11 +23,11 @@
         "0     s s  k       0",
         "0          s   stt 0",
         "0s  s              0",
-        "0    ts s  ttsstt  0",
-        "0    t      s ss s 0",
-        "0iiis s sdkts   s  0",
-        "0iiiddddddt  dddddd0",
-        "0iiiddddddddddddddd0",
+        "0llllls s  ttsstt  0",
+        "0liiit      s ss s 0",
+        "0liii s sdkts   s  0",
+        "0liiidddddt  dddddd0",
+        "0lllllddddddddddddd0",
         "00000000000000000000"
     ]
 }
