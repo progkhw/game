@@ -14,4 +14,5 @@ public:
    
     void setDirection(Vector dir);
     void update(float time, Game& game) override;
+    bool shouldWalk();
 };

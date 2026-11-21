@@ -23,15 +23,28 @@ void Player::update(float time, Game& game) {
         updateAnimation(96, 96, 192, 288, 0, time);
     }
 
-    float nextX = position.x + direction.x * speed * time;
+    float coef = 1;
+    if (game.isInTargetTile(position.x, position.y, 'w')) {
+        coef = 0.5; 
+    }
+
+    float nextX = position.x + direction.x * speed * time * coef;
     if (!isColliding(nextX, position.y, game)) {
         position.x = nextX;
     }
 
-    float nextY = position.y + direction.y * speed * time;
+    float nextY = position.y + direction.y * speed * time * coef;
     if (!isColliding(position.x, nextY, game)) {
         position.y = nextY;
     }
 
     sprite.setPosition(position.x, position.y);
+}
+
+bool Player::shouldWalk() {
+    if (speed > 0.f) {
+        return true;
+    }
+
+    return false;
 }

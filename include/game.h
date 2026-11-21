@@ -71,10 +71,12 @@ private:
     sf::SoundBuffer buttonTouchingB;
     sf::SoundBuffer levelCompl;
     sf::SoundBuffer levelFail;
+    sf::SoundBuffer hotibaB;
     std::vector<sf::SoundBuffer> bleatingsB;
     sf::Sound buttonTouching;
     sf::Sound levelCompleting;
     sf::Sound levelFailing;
+    sf::Sound hotiba;
     std::vector<sf::Sound> bleatings;
 
     bool isMusicEnabled = true;

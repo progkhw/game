@@ -32,6 +32,9 @@ Game::Game() :
     if (!levelFail.loadFromFile("./assets/music/defeatSound.ogg")) {
         std::cerr << "звук поражения не загружен\n";
     }
+    if (!hotibaB.loadFromFile("./assets/music/hotiba.ogg")) {
+        std::cerr << "звук хотьбы не загружен\n";
+    }
     if (!buttonTouchingB.loadFromFile("./assets/music/touchButton.ogg")) {
         std::cerr << "звук нажатия на кнопку не загружен\n";
     }
@@ -48,10 +51,20 @@ Game::Game() :
     buttonTouching.setBuffer(buttonTouchingB);
     levelCompleting.setBuffer(levelCompl);
     levelFailing.setBuffer(levelFail);
+    hotiba.setBuffer(hotibaB);
     bleatings.reserve(3);
     for (size_t i = 0; i < 3; ++i) {
         bleatings.emplace_back();
         bleatings.back().setBuffer(bleatingsB[i]);
+    }
+
+    levelCompleting.setVolume(50);
+    levelFailing.setVolume(50);
+    hotiba.setVolume(100);
+    buttonTouching.setVolume(70);
+    mainMusic.setVolume(15);
+    for (size_t i = 0; i < 3; ++i) {
+        bleatings[i].setVolume(20);
     }
 
     view.reset(sf::FloatRect(0, 0, 640, 480));
@@ -489,6 +502,9 @@ void Game::renderPlaying() {
             if (tileMap[i][j] == 't') {
                 s_map.setTextureRect(sf::IntRect(192, 0, 32, 32));
             }
+            if (tileMap[i][j] == 'w') {
+                s_map.setTextureRect(sf::IntRect(224, 0, 32, 32));
+            }
                     
             s_map.setPosition(j * 32, i * 32);
 
@@ -543,6 +559,10 @@ void Game::renderVictory() {
             if (tileMap[i][j] == 't') {
                 s_map.setTextureRect(sf::IntRect(192, 0, 32, 32));
             }
+            if (tileMap[i][j] == 'w') {
+                s_map.setTextureRect(sf::IntRect(224, 0, 32, 32));
+            }
+
                     
             s_map.setPosition(j * 32, i * 32);
 
@@ -623,6 +643,10 @@ void Game::renderDefeat() {
             if (tileMap[i][j] == 't') {
                 s_map.setTextureRect(sf::IntRect(192, 0, 32, 32));
             }
+            if (tileMap[i][j] == 'w') {
+                s_map.setTextureRect(sf::IntRect(224, 0, 32, 32));
+            }
+
                     
             s_map.setPosition(j * 32, i * 32);
 
@@ -691,6 +715,10 @@ void Game::renderPause() {
             if (tileMap[i][j] == 't') {
                 s_map.setTextureRect(sf::IntRect(192, 0, 32, 32));
             }
+            if (tileMap[i][j] == 'w') {
+                s_map.setTextureRect(sf::IntRect(224, 0, 32, 32));
+            }
+
                     
             s_map.setPosition(j * 32, i * 32);
 
@@ -875,12 +903,23 @@ void Game::run() {
                 player.setDirection(direction);
 
                 player.update(time, *this);
+                if (isSoundEnabled) {
+                    if (player.shouldWalk()) {
+                        if (hotiba.getStatus() == sf::Sound::Status::Stopped) {
+                            hotiba.play();
+                        }
+                    }
+                    else {
+                        hotiba.stop();
+                    }
+                }
+            
                 for (int i = 0; i < sheeps.size(); ++i) {
                     sheeps[i].update(time, *this);
                     if (isSoundEnabled) {
                         if (sheeps[i].shouldBleat()) {
-                            int i = std::rand() % 3;
-                            bleatings[i].play();                        
+                            int j = std::rand() % 3;
+                            bleatings[j].play();                        
                         }
                     }
                 }
@@ -958,6 +997,7 @@ void Game::handleSettingsClick(sf::Vector2i coord) {
             buttonTouching.stop();
             levelCompleting.stop();
             levelFailing.stop();
+            hotiba.stop();
 
             for (auto& i : bleatings) {
                 i.stop();
