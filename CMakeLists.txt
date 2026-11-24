@@ -13,6 +13,7 @@ find_package(SFML 2.6 COMPONENTS graphics window system REQUIRED)
 add_executable(otara
     src/main.cpp
     src/game.cpp
+    src/assetManager.cpp
     src/entity.cpp
     src/player.cpp
     src/sheep.cpp

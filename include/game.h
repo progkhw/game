@@ -3,6 +3,7 @@
 #include <SFML/Audio.hpp>
 
 #include "entity.h"
+#include "assetManager.h"
 #include "player.h"
 #include "sheep.h"
 #include "obstacle.h"
@@ -11,29 +12,8 @@
 #include <vector>
 #include <utility>
 #include <string>
-#include <map>
 
 const float TILE_SIZE = 32.f;
-
-class AssetManager {
-private:
-    std::map<std::string, sf::Texture> textures;
-
-public:
-    AssetManager() {
-        textures["hero"].loadFromFile("./assets/hero.png");
-        textures["map"].loadFromFile("./assets/new_map_3.png");
-        textures["sheep"].loadFromFile("./assets/sheep_hi.png");
-        textures["mainMenu"].loadFromFile("./assets/mainMenu.png");
-        textures["levelBack"].loadFromFile("./assets/levelBack.png");
-        textures["buttonsGame"].loadFromFile("./assets/buttonsGame.png");
-        textures["recordsBack"].loadFromFile("./assets/recordsBack.png");
-    }
-
-    const sf::Texture& get(const std::string& name) {
-        return textures[name];
-    }
-};
 
 enum class GameState {
     MainMenu,
@@ -63,17 +43,11 @@ private:
 
     std::string currentLevelForRestart;
 
-    sf::Font font;
+    const sf::Font* font = nullptr;
     sf::Text availableTime;
     sf::Text countOfSheep;
     sf::Text currentLevel;
 
-    sf::Music mainMusic;
-    sf::SoundBuffer buttonTouchingB;
-    sf::SoundBuffer levelCompl;
-    sf::SoundBuffer levelFail;
-    sf::SoundBuffer hotibaB;
-    std::vector<sf::SoundBuffer> bleatingsB;
     sf::Sound buttonTouching;
     sf::Sound levelCompleting;
     sf::Sound levelFailing;

@@ -16,85 +16,59 @@ using json = nlohmann::json;
 
 Game::Game() :
     window(sf::VideoMode(640, 480), "Отара"),
-    player(640, 400, 96, 96, assets.get("hero")) {
+    player(640, 400, 64, 96, assets.getTexture("hero")) {
 
     state = GameState::MainMenu;
 
-    if (!mainMusic.openFromFile("./assets/music/mainMusic.ogg")) {
-        std::cerr << "музыка для фона не загружена\n";
-    }
-    mainMusic.setLoop(true);
-    mainMusic.play();
+    assets.getMusic("mainMusic").setLoop(true);
+    assets.getMusic("mainMusic").play();
 
-    if (!levelCompl.loadFromFile("./assets/music/victorySound.ogg")) {
-        std::cerr << "звук победы не загружен\n";
-    }
-    if (!levelFail.loadFromFile("./assets/music/defeatSound.ogg")) {
-        std::cerr << "звук поражения не загружен\n";
-    }
-    if (!hotibaB.loadFromFile("./assets/music/hotiba.ogg")) {
-        std::cerr << "звук хотьбы не загружен\n";
-    }
-    if (!buttonTouchingB.loadFromFile("./assets/music/touchButton.ogg")) {
-        std::cerr << "звук нажатия на кнопку не загружен\n";
-    }
-
-    bleatingsB.reserve(3);
-    for (size_t i = 0; i < 3; ++i) {
-        bleatingsB.emplace_back();
-        std::string nameOfFile = "./assets/music/bleating" + std::to_string(i) + ".ogg";
-        if (!bleatingsB.back().loadFromFile(nameOfFile)) {
-            std::cerr << "звук блеяния " << i << " не загружен\n";
-        }
-    }
-
-    buttonTouching.setBuffer(buttonTouchingB);
-    levelCompleting.setBuffer(levelCompl);
-    levelFailing.setBuffer(levelFail);
-    hotiba.setBuffer(hotibaB);
+    buttonTouching.setBuffer(assets.getSound("touchButton"));
+    levelCompleting.setBuffer(assets.getSound("levelCompleting"));
+    levelFailing.setBuffer(assets.getSound("levelFailing"));
+    hotiba.setBuffer(assets.getSound("walking"));
     bleatings.reserve(3);
     for (size_t i = 0; i < 3; ++i) {
+        std::string currentBleating = "bleating" + std::to_string(i + 1);
         bleatings.emplace_back();
-        bleatings.back().setBuffer(bleatingsB[i]);
+        bleatings.back().setBuffer(assets.getSound(currentBleating));
     }
 
     levelCompleting.setVolume(50);
     levelFailing.setVolume(50);
     hotiba.setVolume(100);
     buttonTouching.setVolume(70);
-    mainMusic.setVolume(15);
+    assets.getMusic("mainMusic").setVolume(15);
     for (size_t i = 0; i < 3; ++i) {
         bleatings[i].setVolume(20);
     }
 
     view.reset(sf::FloatRect(0, 0, 640, 480));
     hudView.reset(sf::FloatRect(0, 0, 640, 480));
-    s_map.setTexture(assets.get("map"));
-    zagon.setTexture(assets.get("map"));
+    s_map.setTexture(assets.getTexture("map"));
+    zagon.setTexture(assets.getTexture("map"));
     zagon.setTextureRect(sf::IntRect(0, 32, 160, 160));
-    font.loadFromFile("./assets/fonts/handgeschrieben.ttf");
+    font = &assets.getFont("handgeschrieben");
 
-    bool loading = loadLevel("./levels/level2.json");
+    bool loading = loadLevel("./levels/level1.json");
     if (!loading) {
         std::cerr << "карта не загружена\n";
     }
 
-    availableTime.setFont(font);
+    availableTime.setFont(*font);
     availableTime.setCharacterSize(24);
     availableTime.setFillColor(sf::Color{0, 204, 204});
     availableTime.setPosition(0, 0);
 
-    countOfSheep.setFont(font);
+    countOfSheep.setFont(*font);
     countOfSheep.setCharacterSize(24);
     countOfSheep.setFillColor(sf::Color{0, 204, 204});
     countOfSheep.setPosition(60, 0);
 
-    currentLevel.setFont(font);
+    currentLevel.setFont(*font);
     currentLevel.setCharacterSize(24);
     currentLevel.setFillColor(sf::Color{0, 204, 204});
     currentLevel.setPosition(140, 0);
-
-    //window.close();
 }
 
 bool Game::loadLevel(const std::string& path) {
@@ -137,7 +111,7 @@ bool Game::loadLevel(const std::string& path) {
     zagon.setPosition(zagonSpawn.first * 32, zagonSpawn.second * 32);
     sheeps.clear();
     for (const auto& i : sheepSpawnCoor) {
-        Sheep sheep(i.first * TILE_SIZE, i.second * TILE_SIZE, 32, 32, assets.get("sheep"));
+        Sheep sheep(i.first * TILE_SIZE, i.second * TILE_SIZE, 32, 32, assets.getTexture("sheep"));
         sheeps.push_back(sheep);
     }
 
@@ -222,27 +196,27 @@ void Game::renderMainMenu() {
     sf::Sprite menuBack;
     sf::Text title1, title2, title3, title4;
 
-    menuBack.setTexture(assets.get("mainMenu"));
+    menuBack.setTexture(assets.getTexture("mainMenu"));
 
-    title1.setFont(font);
+    title1.setFont(*font);
     title1.setCharacterSize(40);
     title1.setFillColor(sf::Color::White);
     title1.setPosition(0, 0);
     title1.setString("Playing");
 
-    title2.setFont(font);
+    title2.setFont(*font);
     title2.setCharacterSize(40);
     title2.setFillColor(sf::Color::White);
     title2.setPosition(0, 0);
     title2.setString("Records");
 
-    title3.setFont(font);
+    title3.setFont(*font);
     title3.setCharacterSize(40);
     title3.setFillColor(sf::Color::White);
     title3.setPosition(0, 0);
     title3.setString("Settings");
 
-    title4.setFont(font);
+    title4.setFont(*font);
     title4.setCharacterSize(40);
     title4.setFillColor(sf::Color::White);
     title4.setPosition(0, 0);
@@ -287,9 +261,9 @@ void Game::renderLevelSelect() {
     sf::Sprite levelBack;
     sf::Text level1, level2, level3, back;
 
-    levelBack.setTexture(assets.get("levelBack"));
+    levelBack.setTexture(assets.getTexture("levelBack"));
 
-    level1.setFont(font);
+    level1.setFont(*font);
     level1.setCharacterSize(40);
     level1.setPosition(0, 0);
     level1.setString("Level 1");
@@ -300,7 +274,7 @@ void Game::renderLevelSelect() {
         level1.setFillColor(sf::Color::White);
     }
 
-    level2.setFont(font);
+    level2.setFont(*font);
     level2.setCharacterSize(40);
     level2.setPosition(0, 0);
     level2.setString("Level 2");
@@ -311,7 +285,7 @@ void Game::renderLevelSelect() {
         level2.setFillColor(sf::Color::White);
     }
 
-    level3.setFont(font);
+    level3.setFont(*font);
     level3.setCharacterSize(40);
     level3.setPosition(0, 0);
     level3.setString("Level 3");
@@ -323,7 +297,7 @@ void Game::renderLevelSelect() {
     }
 
 
-    back.setFont(font);
+    back.setFont(*font);
     back.setCharacterSize(40);
     back.setFillColor(sf::Color::White);
     back.setPosition(0, 0);
@@ -372,10 +346,10 @@ void Game::renderRecords() {
     window.clear();
 
     sf::Sprite recordsBack;
-    recordsBack.setTexture(assets.get("recordsBack"));
+    recordsBack.setTexture(assets.getTexture("recordsBack"));
 
     sf::Text back;
-    back.setFont(font);
+    back.setFont(*font);
     back.setCharacterSize(40);
     back.setFillColor(sf::Color::White);
     back.setPosition(280, 200);
@@ -410,7 +384,7 @@ void Game::renderRecords() {
             levelData += stream.str();
         }
         sf::Text currentLevelText;
-        currentLevelText.setFont(font);
+        currentLevelText.setFont(*font);
         currentLevelText.setCharacterSize(40);
         currentLevelText.setFillColor(sf::Color{255, 80, 0});
         currentLevelText.setPosition(startPosition);
@@ -433,26 +407,26 @@ void Game::renderSettings() {
     std::string on = "on";
     std::string off = "off";
     std::string text1 = "Sound: " + (isSoundEnabled ? on : off);
-    title1.setFont(font);
+    title1.setFont(*font);
     title1.setCharacterSize(40);
     title1.setFillColor(sf::Color::White);
     title1.setPosition(100.f, 30.f);
     title1.setString(text1);
    
     std::string text2 = "Music: " + (isMusicEnabled ? on : off);
-    title2.setFont(font);
+    title2.setFont(*font);
     title2.setCharacterSize(40);
     title2.setFillColor(sf::Color::White);
     title2.setPosition(100.f, 80.f);
     title2.setString(text2);
 
-    back.setFont(font);
+    back.setFont(*font);
     back.setCharacterSize(40);
     back.setFillColor(sf::Color::White);
     back.setPosition(100.f, 130.f);
     back.setString("Back");
 
-    settingsBack.setTexture(assets.get("levelBack"));
+    settingsBack.setTexture(assets.getTexture("levelBack"));
 
     settingsBack.setPosition(0, 0);
 
@@ -575,18 +549,18 @@ void Game::renderVictory() {
     window.setView(window.getDefaultView());
     
     sf::Sprite victory, buttonToHome, buttonToRestart;
-    victory.setTexture(assets.get("buttonsGame"));
+    victory.setTexture(assets.getTexture("buttonsGame"));
     victory.setTextureRect(sf::IntRect(0, 32, 144, 64));
     victory.setPosition(249, 170);
-    buttonToHome.setTexture(assets.get("buttonsGame"));
+    buttonToHome.setTexture(assets.getTexture("buttonsGame"));
     buttonToHome.setTextureRect(sf::IntRect(32, 0, 32, 32));
     buttonToHome.setPosition(280, 270);
-    buttonToRestart.setTexture(assets.get("buttonsGame"));
+    buttonToRestart.setTexture(assets.getTexture("buttonsGame"));
     buttonToRestart.setTextureRect(sf::IntRect(0, 0, 32, 32));
     buttonToRestart.setPosition(328, 270);
 
     sf::Text resultTime;
-    resultTime.setFont(font);
+    resultTime.setFont(*font);
     resultTime.setCharacterSize(24);
     resultTime.setFillColor(sf::Color::Black);
     std::string resultTimeText;
@@ -657,13 +631,13 @@ void Game::renderDefeat() {
     window.setView(window.getDefaultView());
 
     sf::Sprite defeat, buttonToHome, buttonToRestart;
-    defeat.setTexture(assets.get("buttonsGame"));
+    defeat.setTexture(assets.getTexture("buttonsGame"));
     defeat.setTextureRect(sf::IntRect(144, 32, 144, 64));
     defeat.setPosition(249, 176);
-    buttonToHome.setTexture(assets.get("buttonsGame"));
+    buttonToHome.setTexture(assets.getTexture("buttonsGame"));
     buttonToHome.setTextureRect(sf::IntRect(32, 0, 32, 32));
     buttonToHome.setPosition(280, 250);
-    buttonToRestart.setTexture(assets.get("buttonsGame"));
+    buttonToRestart.setTexture(assets.getTexture("buttonsGame"));
     buttonToRestart.setTextureRect(sf::IntRect(0, 0, 32, 32));
     buttonToRestart.setPosition(328, 250);
 
@@ -726,7 +700,7 @@ void Game::renderPause() {
     window.setView(window.getDefaultView());
 
     sf::Text pause;
-    pause.setFont(font);
+    pause.setFont(*font);
     pause.setCharacterSize(72);
     pause.setFillColor(sf::Color::Red);
     pause.setPosition(210, 206);
@@ -1003,10 +977,10 @@ void Game::handleSettingsClick(sf::Vector2i coord) {
 
         isMusicEnabled = isMusicEnabled ? false : true;
         if (isMusicEnabled) {
-            mainMusic.play();
+            assets.getMusic("mainMusic").play();
         }
         else {
-            mainMusic.pause();
+            assets.getMusic("mainMusic").pause();
         }
     }
     if (sf::FloatRect(100.f, 130.f, 170.f, 50.f).contains(mousePosition)) {

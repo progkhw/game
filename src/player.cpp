@@ -20,7 +20,7 @@ void Player::setDirection(Vector dir) {
 
 void Player::update(float time, Game& game) {
     if (speed > 0) {
-        updateAnimation(96, 96, 192, 288, 0, time);
+        updateAnimation(64, 96, 192, 288, 0, time);
     }
 
     float coef = 1;
