@@ -55,20 +55,26 @@ Game::Game() :
         std::cerr << "карта не загружена\n";
     }
 
-    availableTime.setFont(*font);
-    availableTime.setCharacterSize(24);
-    availableTime.setFillColor(sf::Color{0, 204, 204});
-    availableTime.setPosition(0, 0);
-
-    countOfSheep.setFont(*font);
-    countOfSheep.setCharacterSize(24);
-    countOfSheep.setFillColor(sf::Color{0, 204, 204});
-    countOfSheep.setPosition(60, 0);
-
-    currentLevel.setFont(*font);
-    currentLevel.setCharacterSize(24);
-    currentLevel.setFillColor(sf::Color{0, 204, 204});
-    currentLevel.setPosition(140, 0);
+    createText("availableTime", *font, 24, {0, 204, 204}, "", {0, 0});
+    createText("countOfSheep", *font, 24, {0, 204, 204}, "", {60, 0});
+    createText("currentLevel", *font, 24, {0, 204, 204}, "", {140, 0});
+    createText("mainMenuButton1", *font, 40, sf::Color::White, "Playing", {100, 30});
+    createText("mainMenuButton2", *font, 40, sf::Color::White, "Records", {100, 80});
+    createText("mainMenuButton3", *font, 40, sf::Color::White, "Settings", {100, 130});
+    createText("mainMenuButton4", *font, 40, sf::Color::White, "Exit", {100, 180});
+    createText("levelSelectButton1", *font, 40, sf::Color::White, "level1", {100, 30});
+    createText("levelSelectButton2", *font, 40, sf::Color::White, "level2", {100, 80});
+    createText("levelSelectButton3", *font, 40, sf::Color::White, "level3", {100, 130});
+    createText("levelSelectButton4", *font, 40, sf::Color::White, "back", {100, 180});
+    createText("recordsButton1", *font, 40, sf::Color::White, "back", {280, 200});
+    createText("level1", *font, 40, {255, 80, 0}, "", {280, 50});
+    createText("level2", *font, 40, {255, 80, 0}, "", {280, 100});
+    createText("level3", *font, 40, {255, 80, 0}, "", {280, 150});
+    createText("settingsButton1", *font, 40, sf::Color::White, "", {100, 30});
+    createText("settingsButton2", *font, 40, sf::Color::White, "", {100, 80});
+    createText("settingsButton3", *font, 40, sf::Color::White, "back", {100, 130});
+    createText("victoryResultTime", *font, 24, sf::Color::White, "", {});
+    createText("playingPause", *font, 40, sf::Color::Red, "Pause", {});
 }
 
 bool Game::loadLevel(const std::string& path) {
@@ -192,64 +198,38 @@ std::pair<int, int> Game::getMapSize() const {
 void Game::renderMainMenu() {
     window.setView(hudView);
     window.clear();
+
+    getText("mainMenuButton1").setFillColor(sf::Color::White);
+    getText("mainMenuButton2").setFillColor(sf::Color::White);
+    getText("mainMenuButton3").setFillColor(sf::Color::White);
+    getText("mainMenuButton4").setFillColor(sf::Color::White);
     
     sf::Sprite menuBack;
-    sf::Text title1, title2, title3, title4;
-
     menuBack.setTexture(assets.getTexture("mainMenu"));
-
-    title1.setFont(*font);
-    title1.setCharacterSize(40);
-    title1.setFillColor(sf::Color::White);
-    title1.setPosition(0, 0);
-    title1.setString("Playing");
-
-    title2.setFont(*font);
-    title2.setCharacterSize(40);
-    title2.setFillColor(sf::Color::White);
-    title2.setPosition(0, 0);
-    title2.setString("Records");
-
-    title3.setFont(*font);
-    title3.setCharacterSize(40);
-    title3.setFillColor(sf::Color::White);
-    title3.setPosition(0, 0);
-    title3.setString("Settings");
-
-    title4.setFont(*font);
-    title4.setCharacterSize(40);
-    title4.setFillColor(sf::Color::White);
-    title4.setPosition(0, 0);
-    title4.setString("Exit");
-
-    title1.setPosition(100, 30);
-    title2.setPosition(100, 80);
-    title3.setPosition(100, 130);
-    title4.setPosition(100, 180);
     menuBack.setPosition(0, 0);
 
     sf::Vector2i mousePos = sf::Mouse::getPosition(window);
     sf::Vector2f mousePosition = window.mapPixelToCoords(mousePos, hudView);
 
     if (sf::FloatRect(100.f, 30.f, 170.f, 50.f).contains(mousePosition)) {
-        title1.setFillColor(sf::Color::Blue);
+        getText("mainMenuButton1").setFillColor(sf::Color::Blue);
     }
     if (sf::FloatRect(100.f, 80.f, 170.f, 50.f).contains(mousePosition)) {
-        title2.setFillColor(sf::Color::Blue);
+        getText("mainMenuButton2").setFillColor(sf::Color::Blue);
     }
     if (sf::FloatRect(100.f, 130.f, 170.f, 50.f).contains(mousePosition)) {
-        title3.setFillColor(sf::Color::Blue);
+        getText("mainMenuButton3").setFillColor(sf::Color::Blue);
     }
     if (sf::FloatRect(100.f, 180.f, 170.f, 50.f).contains(mousePosition)) {
-        title4.setFillColor(sf::Color::Red);
+        getText("mainMenuButton4").setFillColor(sf::Color::Red);
     }
 
     window.draw(menuBack);
 
-    window.draw(title1);
-    window.draw(title2);
-    window.draw(title3);
-    window.draw(title4);
+    window.draw(getText("mainMenuButton1"));
+    window.draw(getText("mainMenuButton2"));
+    window.draw(getText("mainMenuButton3"));
+    window.draw(getText("mainMenuButton4"));
 
     window.display();
 }
@@ -257,56 +237,34 @@ void Game::renderMainMenu() {
 void Game::renderLevelSelect() {
     window.setView(hudView);
     window.clear();
+
+    getText("levelSelectButton1").setFillColor(sf::Color::White);
+    getText("levelSelectButton2").setFillColor(sf::Color::White);
+    getText("levelSelectButton3").setFillColor(sf::Color::White);
+    getText("levelSelectButton4").setFillColor(sf::Color::White);
     
     sf::Sprite levelBack;
-    sf::Text level1, level2, level3, back;
-
     levelBack.setTexture(assets.getTexture("levelBack"));
 
-    level1.setFont(*font);
-    level1.setCharacterSize(40);
-    level1.setPosition(0, 0);
-    level1.setString("Level 1");
     if (!isThisLevelAvailable("./levels/level1.json")) {
-        level1.setFillColor(sf::Color::Red);
+        getText("levelSelectButton1").setFillColor(sf::Color::Red);
     }
     else {
-        level1.setFillColor(sf::Color::White);
+        getText("levelSelectButton1").setFillColor(sf::Color::White);
     }
-
-    level2.setFont(*font);
-    level2.setCharacterSize(40);
-    level2.setPosition(0, 0);
-    level2.setString("Level 2");
     if (!isThisLevelAvailable("./levels/level2.json")) {
-        level2.setFillColor(sf::Color::Red);
+        getText("levelSelectButton2").setFillColor(sf::Color::Red);
     }
     else {
-        level2.setFillColor(sf::Color::White);
+        getText("levelSelectButton2").setFillColor(sf::Color::White);
     }
-
-    level3.setFont(*font);
-    level3.setCharacterSize(40);
-    level3.setPosition(0, 0);
-    level3.setString("Level 3");
     if (!isThisLevelAvailable("./levels/level3.json")) {
-        level3.setFillColor(sf::Color::Red);
+        getText("levelSelectButton3").setFillColor(sf::Color::Red);
     }
     else {
-        level3.setFillColor(sf::Color::White);
+        getText("levelSelectButton3") .setFillColor(sf::Color::White);
     }
 
-
-    back.setFont(*font);
-    back.setCharacterSize(40);
-    back.setFillColor(sf::Color::White);
-    back.setPosition(0, 0);
-    back.setString("Back");
-
-    level1.setPosition(100, 30);
-    level2.setPosition(100, 80);
-    level3.setPosition(100, 130);
-    back.setPosition(100, 180);
     levelBack.setPosition(0, 0);
 
     sf::Vector2i mousePos = sf::Mouse::getPosition(window);
@@ -314,29 +272,29 @@ void Game::renderLevelSelect() {
 
     if (sf::FloatRect(100.f, 30.f, 170.f, 50.f).contains(mousePosition)) {
         if (isThisLevelAvailable("./levels/level1.json")) {
-            level1.setFillColor(sf::Color::Green);
+            getText("levelSelectButton1").setFillColor(sf::Color::Green);
         }
     }
     if (sf::FloatRect(100.f, 80.f, 170.f, 50.f).contains(mousePosition)) {
         if (isThisLevelAvailable("./levels/level2.json")) {
-            level2.setFillColor(sf::Color::Green);
+            getText("levelSelectButton2").setFillColor(sf::Color::Green);
         }
     }
     if (sf::FloatRect(100.f, 130.f, 170.f, 50.f).contains(mousePosition)) {
         if (isThisLevelAvailable("./levels/level3.json")) {
-            level3.setFillColor(sf::Color::Green);
+            getText("levelSelectButton3").setFillColor(sf::Color::Green);
         }
     }
     if (sf::FloatRect(100.f, 180.f, 170.f, 50.f).contains(mousePosition)) {
-        back.setFillColor(sf::Color::Red);
+        getText("levelSelectButton4").setFillColor(sf::Color::Red);
     }
 
     window.draw(levelBack);
 
-    window.draw(level1);
-    window.draw(level2);
-    window.draw(level3);
-    window.draw(back);
+    window.draw(getText("levelSelectButton1"));
+    window.draw(getText("levelSelectButton2"));
+    window.draw(getText("levelSelectButton3"));
+    window.draw(getText("levelSelectButton4"));
 
     window.display();
 }
@@ -345,15 +303,10 @@ void Game::renderRecords() {
     window.setView(hudView);
     window.clear();
 
+    getText("recordsButton1").setFillColor(sf::Color::White);
+
     sf::Sprite recordsBack;
     recordsBack.setTexture(assets.getTexture("recordsBack"));
-
-    sf::Text back;
-    back.setFont(*font);
-    back.setCharacterSize(40);
-    back.setFillColor(sf::Color::White);
-    back.setPosition(280, 200);
-    back.setString("Back");
 
     std::ifstream inp("./levels/records.json"); 
     if (!inp.is_open()) {
@@ -366,12 +319,10 @@ void Game::renderRecords() {
     sf::Vector2i mousePos = sf::Mouse::getPosition(window);
     sf::Vector2f mousePosition = window.mapPixelToCoords(mousePos, hudView);
     if (sf::FloatRect(280.f, 200.f, 70.f, 50.f).contains(mousePosition)) {
-        back.setFillColor(sf::Color::Red);
+        getText("recordsButton1").setFillColor(sf::Color::Red);
     }
 
     window.draw(recordsBack);
-
-    sf::Vector2f startPosition(280.f, 50.f);
     for (int i = 0; i < parser.size(); ++i) {
         std::string levelIndex = "level" + std::to_string(i + 1);
         std::string levelData = levelIndex + ": ";
@@ -383,72 +334,51 @@ void Game::renderRecords() {
             stream << std::fixed << std::setprecision(1) << parser[levelIndex].get<float>();
             levelData += stream.str();
         }
-        sf::Text currentLevelText;
-        currentLevelText.setFont(*font);
-        currentLevelText.setCharacterSize(40);
-        currentLevelText.setFillColor(sf::Color{255, 80, 0});
-        currentLevelText.setPosition(startPosition);
-        currentLevelText.setString(levelData);
-        startPosition.y += 50.f;
-        window.draw(currentLevelText);
+        getText(levelIndex).setString(levelData);
+        window.draw(getText(levelIndex));
     }
 
-    window.draw(back);
+    window.draw(getText("recordsButton1"));
     window.display();
 }
 
 void Game::renderSettings() {
     window.setView(hudView);
     window.clear();
+
+    getText("settingsButton1").setFillColor(sf::Color::White);
+    getText("settingsButton2").setFillColor(sf::Color::White);
+    getText("settingsButton3").setFillColor(sf::Color::White);
     
     sf::Sprite settingsBack;
-    sf::Text title1, title2, back;
+    settingsBack.setTexture(assets.getTexture("levelBack"));
+    settingsBack.setPosition(0, 0);
 
     std::string on = "on";
     std::string off = "off";
     std::string text1 = "Sound: " + (isSoundEnabled ? on : off);
-    title1.setFont(*font);
-    title1.setCharacterSize(40);
-    title1.setFillColor(sf::Color::White);
-    title1.setPosition(100.f, 30.f);
-    title1.setString(text1);
+    getText("settingsButton1").setString(text1);
    
     std::string text2 = "Music: " + (isMusicEnabled ? on : off);
-    title2.setFont(*font);
-    title2.setCharacterSize(40);
-    title2.setFillColor(sf::Color::White);
-    title2.setPosition(100.f, 80.f);
-    title2.setString(text2);
-
-    back.setFont(*font);
-    back.setCharacterSize(40);
-    back.setFillColor(sf::Color::White);
-    back.setPosition(100.f, 130.f);
-    back.setString("Back");
-
-    settingsBack.setTexture(assets.getTexture("levelBack"));
-
-    settingsBack.setPosition(0, 0);
+    getText("settingsButton2").setString(text2);
 
     sf::Vector2i mousePos = sf::Mouse::getPosition(window);
     sf::Vector2f mousePosition = window.mapPixelToCoords(mousePos, hudView);
 
     if (sf::FloatRect(100.f, 30.f, 170.f, 50.f).contains(mousePosition)) {
-        title1.setFillColor(sf::Color::Blue);
+        getText("settingsButton1").setFillColor(sf::Color::Blue);
     }
     if (sf::FloatRect(100.f, 80.f, 170.f, 50.f).contains(mousePosition)) {
-        title2.setFillColor(sf::Color::Blue);
+        getText("settingsButton2").setFillColor(sf::Color::Blue);
     }
     if (sf::FloatRect(100.f, 130.f, 170.f, 50.f).contains(mousePosition)) {
-        back.setFillColor(sf::Color::Red);
+        getText("settingsButton3").setFillColor(sf::Color::Red);
     }
 
     window.draw(settingsBack);
-
-    window.draw(title1);
-    window.draw(title2);
-    window.draw(back);
-
+    window.draw(getText("settingsButton1"));
+    window.draw(getText("settingsButton2"));
+    window.draw(getText("settingsButton3"));
     window.display();
 }
 
@@ -494,13 +424,13 @@ void Game::renderPlaying() {
     player.draw(window);
 
     std::string currLevel = getLevelFromPath(currentLevelForRestart);
-    currentLevel.setString(currLevel);
+    getText("currentLevel").setString(currLevel);
     window.setView(window.getDefaultView());
     window.setView(hudView);
 
-    window.draw(currentLevel);
-    window.draw(availableTime);
-    window.draw(countOfSheep);
+    window.draw(getText("currentLevel"));
+    window.draw(getText("availableTime"));
+    window.draw(getText("countOfSheep"));
 
     window.display();
 }
@@ -559,27 +489,23 @@ void Game::renderVictory() {
     buttonToRestart.setTextureRect(sf::IntRect(0, 0, 32, 32));
     buttonToRestart.setPosition(328, 270);
 
-    sf::Text resultTime;
-    resultTime.setFont(*font);
-    resultTime.setCharacterSize(24);
-    resultTime.setFillColor(sf::Color::Black);
     std::string resultTimeText;
     std::ostringstream stream;
     stream << std::fixed << std::setprecision(1) << currentTime;
     resultTimeText += stream.str();
-    resultTime.setString(resultTimeText);
-    sf::FloatRect bounds = resultTime.getLocalBounds();
-    resultTime.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
-    resultTime.setPosition(320, 240);
+    getText("victoryResultTime").setString(resultTimeText);
+    sf::FloatRect bounds = getText("victoryResultTime").getLocalBounds();
+    getText("victoryResultTime").setOrigin(bounds.width / 2.f, bounds.height / 2.f);
+    getText("victoryResultTime").setPosition(hudView.getCenter());
 
     window.setView(hudView);
 
     std::string currLevel = getLevelFromPath(currentLevelForRestart);
-    currentLevel.setString(currLevel);
-    window.draw(currentLevel);
-    window.draw(resultTime);
-    window.draw(availableTime);
-    window.draw(countOfSheep);
+    getText("currentLevel").setString(currLevel);
+    window.draw(getText("currentLevel"));
+    window.draw(getText("victoryResultTime"));
+    window.draw(getText("availableTime"));
+    window.draw(getText("countOfSheep"));
     window.draw(victory);
     window.draw(buttonToRestart);
     window.draw(buttonToHome);
@@ -644,11 +570,10 @@ void Game::renderDefeat() {
     window.setView(hudView);
 
     std::string currLevel = getLevelFromPath(currentLevelForRestart);
-    currentLevel.setString(currLevel);
-    window.draw(currentLevel);
-
-    window.draw(availableTime);
-    window.draw(countOfSheep);
+    getText("currentLevel").setString(currLevel);
+    window.draw(getText("currentLevel"));
+    window.draw(getText("availableTime"));
+    window.draw(getText("countOfSheep"));
     window.draw(defeat);
     window.draw(buttonToRestart);
     window.draw(buttonToHome);
@@ -699,22 +624,18 @@ void Game::renderPause() {
     player.draw(window);
     window.setView(window.getDefaultView());
 
-    sf::Text pause;
-    pause.setFont(*font);
-    pause.setCharacterSize(72);
-    pause.setFillColor(sf::Color::Red);
-    pause.setPosition(210, 206);
-    pause.setString("PAUSE");
+    sf::FloatRect textBounds = getText("playingPause").getLocalBounds();
+    getText("playingPause").setOrigin(textBounds.width / 2.f, textBounds.height / 2.f);
+    getText("playingPause").setPosition(hudView.getCenter());
 
     window.setView(hudView);
 
     std::string currLevel = getLevelFromPath(currentLevelForRestart);
-    currentLevel.setString(currLevel);
-    window.draw(currentLevel);
-
-    window.draw(availableTime);
-    window.draw(countOfSheep);
-    window.draw(pause);
+    getText("currentLevel").setString(currLevel);
+    window.draw(getText("currentLevel"));
+    window.draw(getText("availableTime"));
+    window.draw(getText("countOfSheep"));
+    window.draw(getText("playingPause"));
 
     window.display();
 }
@@ -828,10 +749,10 @@ void Game::run() {
         }
 
 
-        availableTime.setString(std::to_string(static_cast<int>(std::ceil(levelTime - currentTime))));
+        getText("availableTime").setString(std::to_string(static_cast<int>(std::ceil(levelTime - currentTime))));
         std::string cosiz = std::to_string(sheeps.size() - countOfSheepInZagon);
         cosiz = cosiz + " / " + std::to_string(sheeps.size());
-        countOfSheep.setString(cosiz);
+        getText("countOfSheep").setString(cosiz);
 
         if (state == GameState::Playing) {
             currentTime += timeSeconds;
@@ -916,6 +837,9 @@ void Game::run() {
         if (state == GameState::Exit) {
             window.close();
             break;
+        }
+        if (state != GameState::Playing || hotiba.getStatus() == sf::Sound::Status::Stopped) {
+            hotiba.stop();
         }
 
         render();
@@ -1101,6 +1025,21 @@ void Game::handleRecordsClick(sf::Vector2i coord) {
     }
 }
 
+void Game::createText(const std::string& id, const sf::Font& fontText, int charSize, const sf::Color& color, const std::string& text, const sf::Vector2f& pos) {
+    sf::Text temp;
+    temp.setFont(fontText);
+    temp.setCharacterSize(charSize);
+    temp.setFillColor(color);
+    temp.setString(text);
+    temp.setPosition(pos);
+
+    texts[id] = std::move(temp);
+}
+
+sf::Text& Game::getText(const std::string& id) {
+    return texts.at(id);
+}
+
 void Game::updateRecord(float timeOfLevel) {
     std::ifstream inp("./levels/records.json"); 
     if (!inp.is_open()) {
@@ -1151,11 +1090,11 @@ std::string Game::getLevelFromPath(const std::string& str) {
 }
 
 bool Game::isThisLevelAvailable(const std::string& level) {
-    std::string currentLevel = getLevelFromPath(level);
-    if (currentLevel == "level1") {
+    std::string currentLevelTemp = getLevelFromPath(level);
+    if (currentLevelTemp == "level1") {
         return true;
     }
-    else if (currentLevel == "") {
+    else if (currentLevelTemp == "") {
         return false;
     }
 
@@ -1170,7 +1109,7 @@ bool Game::isThisLevelAvailable(const std::string& level) {
     inp.close();
 
     try {
-        currentLevel = "level" + std::to_string(std::stoi(currentLevel.replace(0, 5, "")) - 1);
+        currentLevelTemp = "level" + std::to_string(std::stoi(currentLevelTemp.replace(0, 5, "")) - 1);
     }
     catch (const std::invalid_argument& er) {
         std::cerr << "ошибка: строка не является числом\n";
@@ -1181,7 +1120,7 @@ bool Game::isThisLevelAvailable(const std::string& level) {
         return false;
     }
 
-    if (parser.contains(currentLevel) && parser[currentLevel].get<float>() > 0.f) {
+    if (parser.contains(currentLevelTemp) && parser[currentLevelTemp].get<float>() > 0.f) {
         return true;
     }
 

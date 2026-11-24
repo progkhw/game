@@ -10,6 +10,7 @@
 #include "vector.h"
 
 #include <vector>
+#include <map>
 #include <utility>
 #include <string>
 
@@ -44,9 +45,7 @@ private:
     std::string currentLevelForRestart;
 
     const sf::Font* font = nullptr;
-    sf::Text availableTime;
-    sf::Text countOfSheep;
-    sf::Text currentLevel;
+    std::map<std::string, sf::Text> texts;
 
     sf::Sound buttonTouching;
     sf::Sound levelCompleting;
@@ -96,6 +95,9 @@ public:
     void handleDefeatClick(sf::Vector2i coord);
     void handleRecordsClick(sf::Vector2i coord);
     void render();
+
+    void createText(const std::string& id, const sf::Font& fontText, int charSize, const sf::Color& color, const std::string& text, const sf::Vector2f& pos);
+    sf::Text& getText(const std::string& id);
 
     void updateRecord(float timeOfLevel);
     bool isThisLevelAvailable(const std::string& level);
