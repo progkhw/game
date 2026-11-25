@@ -14,6 +14,7 @@ add_executable(otara
     src/main.cpp
     src/game.cpp
     src/assetManager.cpp
+    src/renderer.cpp
     src/entity.cpp
     src/player.cpp
     src/sheep.cpp

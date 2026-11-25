@@ -25,7 +25,7 @@ public:
     virtual ~Entity() = default;
 
     virtual void update(float time, Game& game) = 0;
-    void draw(sf::RenderWindow& window);
+    void draw(sf::RenderWindow& window) const;
     void updateAnimation(int stepByX, int moveToLeft, int moveToRight, int moveToUp, int moveToDown, float time);
 
     Vector getPosition() const;

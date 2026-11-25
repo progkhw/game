@@ -8,15 +8,15 @@
 #include <string>
 
 AssetManager::AssetManager() {
-    if (!loadTexture("hero", "./assets/real_hero.png")) {
+    if (!loadTexture("hero", "./assets/hero.png")) {
         std::cerr << "не удалось загрузить тексуру: hero.png\n";
     }
 
-    if (!loadTexture("map", "assets/new_map_3.png")) {
+    if (!loadTexture("map", "assets/map.png")) {
         std::cerr << "не удалось загрузить тексуру: new_map_3.png\n";
     }
 
-    if (!loadTexture("sheep", "./assets/sheep_hi.png")) {
+    if (!loadTexture("sheep", "./assets/sheep.png")) {
         std::cerr << "не удалось загрузить тексуру: sheep_hi.png\n";
     }
 

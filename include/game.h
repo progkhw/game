@@ -4,6 +4,7 @@
 
 #include "entity.h"
 #include "assetManager.h"
+#include "renderer.h"
 #include "player.h"
 #include "sheep.h"
 #include "obstacle.h"
@@ -41,11 +42,10 @@ private:
     std::vector<Obstacle> obstacles;
     std::pair<float, float> zagonSpawn;
     int countOfSheepInZagon = 0;
+    std::vector<std::string> tileMap;
 
     std::string currentLevelForRestart;
 
-    const sf::Font* font = nullptr;
-    std::map<std::string, sf::Text> texts;
 
     sf::Sound buttonTouching;
     sf::Sound levelCompleting;
@@ -56,23 +56,10 @@ private:
     bool isMusicEnabled = true;
     bool isSoundEnabled = true;
 
-    sf::Sprite s_map;
-    sf::Sprite zagon;
     sf::View view;
     sf::View hudView;
 
-    int mapWidth = 0;
-    int mapHeight = 0;
-    std::vector<std::string> tileMap;
-
-    void renderMainMenu();
-    void renderLevelSelect();
-    void renderRecords();
-    void renderSettings();
-    void renderPlaying();
-    void renderVictory();
-    void renderDefeat();
-    void renderPause();
+    Renderer renderer;
 
 public:
     Game();
@@ -95,9 +82,6 @@ public:
     void handleDefeatClick(sf::Vector2i coord);
     void handleRecordsClick(sf::Vector2i coord);
     void render();
-
-    void createText(const std::string& id, const sf::Font& fontText, int charSize, const sf::Color& color, const std::string& text, const sf::Vector2f& pos);
-    sf::Text& getText(const std::string& id);
 
     void updateRecord(float timeOfLevel);
     bool isThisLevelAvailable(const std::string& level);

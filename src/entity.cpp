@@ -11,7 +11,7 @@ Entity::Entity(float x, float y, float w, float h, const sf::Texture& texture)
         sprite.setOrigin(size.x / 2, size.y);
 }
 
-void Entity::draw(sf::RenderWindow& window) {
+void Entity::draw(sf::RenderWindow& window) const {
     window.draw(sprite);
 }
 
