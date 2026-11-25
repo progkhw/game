@@ -6,36 +6,49 @@ Renderer::Renderer(sf::RenderWindow& _window, const AssetManager& _assets, const
     zagon.setTexture(assets.getTexture("map"));
     zagon.setTextureRect(sf::IntRect(0, 32, 160, 160));
 
-    createText("availableTime", font, 24, {0, 204, 204}, "", {0, 0});
-    createText("countOfSheep", font, 24, {0, 204, 204}, "", {60, 0});
-    createText("currentLevel", font, 24, {0, 204, 204}, "", {140, 0});
-    createText("mainMenuButton1", font, 40, sf::Color::White, "Playing", {100, 30});
-    createText("mainMenuButton2", font, 40, sf::Color::White, "Records", {100, 80});
-    createText("mainMenuButton3", font, 40, sf::Color::White, "Settings", {100, 130});
-    createText("mainMenuButton4", font, 40, sf::Color::White, "Exit", {100, 180});
-    createText("levelSelectButton1", font, 40, sf::Color::White, "level1", {100, 30});
-    createText("levelSelectButton2", font, 40, sf::Color::White, "level2", {100, 80});
-    createText("levelSelectButton3", font, 40, sf::Color::White, "level3", {100, 130});
-    createText("levelSelectButton4", font, 40, sf::Color::White, "back", {100, 180});
-    createText("recordsButton1", font, 40, sf::Color::White, "back", {280, 200});
-    createText("level1", font, 40, {255, 80, 0}, "", {280, 50});
-    createText("level2", font, 40, {255, 80, 0}, "", {280, 100});
-    createText("level3", font, 40, {255, 80, 0}, "", {280, 150});
-    createText("settingsButton1", font, 40, sf::Color::White, "", {100, 30});
-    createText("settingsButton2", font, 40, sf::Color::White, "", {100, 80});
-    createText("settingsButton3", font, 40, sf::Color::White, "back", {100, 130});
-    createText("victoryResultTime", font, 24, sf::Color::White, "", {});
-    createText("playingPause", font, 40, sf::Color::Red, "Pause", {});
+    sf::Vector2f huvic = hudView.getCenter();
+
+    createText("availableTime", font, 24, {2, 151, 151}, "", false, {0, 0});
+    createText("countOfSheep", font, 24, {2, 151, 151}, "", false, {60, 0});
+    createText("currentLevel", font, 24, {2, 151, 151}, "", false, {140, 0});
+    createText("mainMenuButton1", font, 40, {0, 204, 204}, "Playing", false, {100, 30});
+    createText("mainMenuButton2", font, 40, {0, 204, 204}, "Records", false, {100, 80});
+    createText("mainMenuButton3", font, 40, {0, 204, 204}, "Settings", false, {100, 130});
+    createText("mainMenuButton4", font, 40, {0, 204, 204}, "Exit", false, {100, 180});
+    createText("levelSelectButton1", font, 40, {0, 204, 204}, "level1", false, {100, 30});
+    createText("levelSelectButton2", font, 40, {0, 204, 204}, "level2", false, {100, 80});
+    createText("levelSelectButton3", font, 40, {0, 204, 204}, "level3", false, {100, 130});
+    createText("levelSelectButton4", font, 40, {0, 204, 204}, "Back", false, {100, 180});
+    createText("recordsButton1", font, 40, {0, 204, 204}, "Back", false, {280, 200});
+    createText("level1", font, 40, {220, 90, 20}, "", false, {280, 50});
+    createText("level2", font, 40, {220, 90, 20}, "", false, {280, 100});
+    createText("level3", font, 40, {220, 90, 20}, "", false, {280, 150});
+    createText("settingsButton1", font, 40, {0, 204, 204}, "", false, {100, 30});
+    createText("settingsButton2", font, 40, {0, 204, 204}, "", false, {100, 80});
+    createText("settingsButton3", font, 40, {0, 204, 204}, "Back", false, {100, 130});
+
+    createText("playingPause", font, 24, {0, 204, 204}, "Pause", true, {huvic.x, huvic.y - 20});
+    createText("playingPauseButton1", font, 24, {0, 204, 204}, "Menu", true, {huvic.x - 50, huvic.y + 20});
+    createText("playingPauseButton2", font, 24, {0, 204, 204}, "Restart", true, {huvic.x + 50, huvic.y + 20});
+
+    createText("playingVictory", font, 24, {0, 204, 204}, "Victory", true, {huvic.x, huvic.y - 30});
+    createText("playingVictoryTime", font, 24, {0, 204, 204}, "", true, huvic);
+    createText("playingVictoryButton1", font, 24, {0, 204, 204}, "Menu", true, {huvic.x - 45, huvic.y + 30});
+    createText("playingVictoryButton2", font, 24, {0, 204, 204}, "Restart", true, {huvic.x + 45, huvic.y + 30});
+
+    createText("playingDefeat", font, 24, {0, 204, 204}, "Defeat", true, {huvic.x, huvic.y - 20});
+    createText("playingDefeatButton1", font, 24, {0, 204, 204}, "Menu", true, {huvic.x - 50, huvic.y + 20});
+    createText("playingDefeatButton2", font, 24, {0, 204, 204}, "Restart", true, {huvic.x + 50, huvic.y + 20});
 }
 
 void Renderer::renderMainMenu() {
     window.setView(hudView);
     window.clear();
 
-    getText("mainMenuButton1").setFillColor(sf::Color::White);
-    getText("mainMenuButton2").setFillColor(sf::Color::White);
-    getText("mainMenuButton3").setFillColor(sf::Color::White);
-    getText("mainMenuButton4").setFillColor(sf::Color::White);
+    getText("mainMenuButton1").setFillColor({0, 204, 204});
+    getText("mainMenuButton2").setFillColor({0, 204, 204});
+    getText("mainMenuButton3").setFillColor({0, 204, 204});
+    getText("mainMenuButton4").setFillColor({0, 204, 204});
     
     sf::Sprite menuBack;
     menuBack.setTexture(assets.getTexture("mainMenu"));
@@ -44,17 +57,17 @@ void Renderer::renderMainMenu() {
     sf::Vector2i mousePos = sf::Mouse::getPosition(window);
     sf::Vector2f mousePosition = window.mapPixelToCoords(mousePos, hudView);
 
-    if (sf::FloatRect(100.f, 30.f, 170.f, 50.f).contains(mousePosition)) {
-        getText("mainMenuButton1").setFillColor(sf::Color::Blue);
+    if (getText("mainMenuButton1").getGlobalBounds().contains(mousePosition)) {
+        getText("mainMenuButton1").setFillColor({2, 151, 151});
     }
-    if (sf::FloatRect(100.f, 80.f, 170.f, 50.f).contains(mousePosition)) {
-        getText("mainMenuButton2").setFillColor(sf::Color::Blue);
+    if (getText("mainMenuButton2").getGlobalBounds().contains(mousePosition)) {
+        getText("mainMenuButton2").setFillColor({2, 151, 151});
     }
-    if (sf::FloatRect(100.f, 130.f, 170.f, 50.f).contains(mousePosition)) {
-        getText("mainMenuButton3").setFillColor(sf::Color::Blue);
+    if (getText("mainMenuButton3").getGlobalBounds().contains(mousePosition)) {
+        getText("mainMenuButton3").setFillColor({2, 151, 151});
     }
-    if (sf::FloatRect(100.f, 180.f, 170.f, 50.f).contains(mousePosition)) {
-        getText("mainMenuButton4").setFillColor(sf::Color::Red);
+    if (getText("mainMenuButton4").getGlobalBounds().contains(mousePosition)) {
+        getText("mainMenuButton4").setFillColor({2, 151, 151});
     }
 
     window.draw(menuBack);
@@ -71,31 +84,31 @@ void Renderer::renderLevelSelect(const std::vector<bool>& levelsAvailable) {
     window.setView(hudView);
     window.clear();
 
-    getText("levelSelectButton1").setFillColor(sf::Color::White);
-    getText("levelSelectButton2").setFillColor(sf::Color::White);
-    getText("levelSelectButton3").setFillColor(sf::Color::White);
-    getText("levelSelectButton4").setFillColor(sf::Color::White);
+    getText("levelSelectButton1").setFillColor({0, 204, 204});
+    getText("levelSelectButton2").setFillColor({0, 204, 204});
+    getText("levelSelectButton3").setFillColor({0, 204, 204});
+    getText("levelSelectButton4").setFillColor({0, 204, 204});
     
     sf::Sprite levelBack;
     levelBack.setTexture(assets.getTexture("levelBack"));
 
     if (!levelsAvailable[0]) {
-        getText("levelSelectButton1").setFillColor(sf::Color::Red);
+        getText("levelSelectButton1").setFillColor({3, 125, 125});
     }
     else {
-        getText("levelSelectButton1").setFillColor(sf::Color::White);
+        getText("levelSelectButton1").setFillColor({0, 204, 204});
     }
     if (!levelsAvailable[1]) {
-        getText("levelSelectButton2").setFillColor(sf::Color::Red);
+        getText("levelSelectButton2").setFillColor({3, 125, 125});
     }
     else {
-        getText("levelSelectButton2").setFillColor(sf::Color::White);
+        getText("levelSelectButton2").setFillColor({0, 204, 204});
     }
     if (!levelsAvailable[2]) {
-        getText("levelSelectButton3").setFillColor(sf::Color::Red);
+        getText("levelSelectButton3").setFillColor({3, 125, 125});
     }
     else {
-        getText("levelSelectButton3") .setFillColor(sf::Color::White);
+        getText("levelSelectButton3") .setFillColor({0, 204, 204});
     }
 
     levelBack.setPosition(0, 0);
@@ -103,23 +116,23 @@ void Renderer::renderLevelSelect(const std::vector<bool>& levelsAvailable) {
     sf::Vector2i mousePos = sf::Mouse::getPosition(window);
     sf::Vector2f mousePosition = window.mapPixelToCoords(mousePos, hudView);
 
-    if (sf::FloatRect(100.f, 30.f, 170.f, 50.f).contains(mousePosition)) {
+    if (getText("levelSelectButton1").getGlobalBounds().contains(mousePosition)) {
         if (levelsAvailable[0]) {
-            getText("levelSelectButton1").setFillColor(sf::Color::Green);
+            getText("levelSelectButton1").setFillColor({2, 151, 151});
         }
     }
-    if (sf::FloatRect(100.f, 80.f, 170.f, 50.f).contains(mousePosition)) {
+    if (getText("levelSelectButton2").getGlobalBounds().contains(mousePosition)) {
         if (levelsAvailable[1]) {
-            getText("levelSelectButton2").setFillColor(sf::Color::Green);
+            getText("levelSelectButton2").setFillColor({2, 151, 151});
         }
     }
-    if (sf::FloatRect(100.f, 130.f, 170.f, 50.f).contains(mousePosition)) {
+    if (getText("levelSelectButton3").getGlobalBounds().contains(mousePosition)) {
         if (levelsAvailable[2]) {
-            getText("levelSelectButton3").setFillColor(sf::Color::Green);
+            getText("levelSelectButton3").setFillColor({2, 151, 151});
         }
     }
-    if (sf::FloatRect(100.f, 180.f, 170.f, 50.f).contains(mousePosition)) {
-        getText("levelSelectButton4").setFillColor(sf::Color::Red);
+    if (getText("levelSelectButton4").getGlobalBounds().contains(mousePosition)) {
+        getText("levelSelectButton4").setFillColor({2, 151, 151});
     }
 
     window.draw(levelBack);
@@ -136,7 +149,7 @@ void Renderer::renderRecords() {
     window.setView(hudView);
     window.clear();
 
-    getText("recordsButton1").setFillColor(sf::Color::White);
+    getText("recordsButton1").setFillColor({0, 204, 204});
 
     sf::Sprite recordsBack;
     recordsBack.setTexture(assets.getTexture("recordsBack"));
@@ -152,8 +165,8 @@ void Renderer::renderRecords() {
 
     sf::Vector2i mousePos = sf::Mouse::getPosition(window);
     sf::Vector2f mousePosition = window.mapPixelToCoords(mousePos, hudView);
-    if (sf::FloatRect(280.f, 200.f, 70.f, 50.f).contains(mousePosition)) {
-        getText("recordsButton1").setFillColor(sf::Color::Red);
+    if (getText("recordsButton1").getGlobalBounds().contains(mousePosition)) {
+        getText("recordsButton1").setFillColor({2, 151, 151});
     }
 
     window.draw(recordsBack);
@@ -180,9 +193,9 @@ void Renderer::renderSettings(bool isSoundEnabled, bool isMusicEnabled) {
     window.setView(hudView);
     window.clear();
 
-    getText("settingsButton1").setFillColor(sf::Color::White);
-    getText("settingsButton2").setFillColor(sf::Color::White);
-    getText("settingsButton3").setFillColor(sf::Color::White);
+    getText("settingsButton1").setFillColor({0, 204, 204});
+    getText("settingsButton2").setFillColor({0, 204, 204});
+    getText("settingsButton3").setFillColor({0, 204, 204});
     
     sf::Sprite settingsBack;
     settingsBack.setTexture(assets.getTexture("levelBack"));
@@ -199,14 +212,14 @@ void Renderer::renderSettings(bool isSoundEnabled, bool isMusicEnabled) {
     sf::Vector2i mousePos = sf::Mouse::getPosition(window);
     sf::Vector2f mousePosition = window.mapPixelToCoords(mousePos, hudView);
 
-    if (sf::FloatRect(100.f, 30.f, 170.f, 50.f).contains(mousePosition)) {
-        getText("settingsButton1").setFillColor(sf::Color::Blue);
+    if (getText("settingsButton1").getGlobalBounds().contains(mousePosition)) {
+        getText("settingsButton1").setFillColor({2, 151, 151});
     }
-    if (sf::FloatRect(100.f, 80.f, 170.f, 50.f).contains(mousePosition)) {
-        getText("settingsButton2").setFillColor(sf::Color::Blue);
+    if (getText("settingsButton2").getGlobalBounds().contains(mousePosition)) {
+        getText("settingsButton2").setFillColor({2, 151, 151});
     }
-    if (sf::FloatRect(100.f, 130.f, 170.f, 50.f).contains(mousePosition)) {
-        getText("settingsButton3").setFillColor(sf::Color::Red);
+    if (getText("settingsButton3").getGlobalBounds().contains(mousePosition)) {
+        getText("settingsButton3").setFillColor({2, 151, 151});
     }
 
     window.draw(settingsBack);
@@ -275,6 +288,9 @@ void Renderer::renderVictory(const std::string& resultTime, const std::string& c
     window.setView(view);
     window.clear();
 
+    getText("playingVictoryButton1").setFillColor({0, 204, 204});
+    getText("playingVictoryButton2").setFillColor({0, 204, 204});
+
     renderMap();
     window.draw(zagon);
     for (int i = 0; i < sheeps.size(); ++i) {
@@ -282,33 +298,28 @@ void Renderer::renderVictory(const std::string& resultTime, const std::string& c
     }
     player.draw(window);
     window.setView(window.getDefaultView());
-    
-    sf::Sprite victory, buttonToHome, buttonToRestart;
-    victory.setTexture(assets.getTexture("buttonsGame"));
-    victory.setTextureRect(sf::IntRect(0, 32, 144, 64));
-    victory.setPosition(249, 170);
-    buttonToHome.setTexture(assets.getTexture("buttonsGame"));
-    buttonToHome.setTextureRect(sf::IntRect(32, 0, 32, 32));
-    buttonToHome.setPosition(280, 270);
-    buttonToRestart.setTexture(assets.getTexture("buttonsGame"));
-    buttonToRestart.setTextureRect(sf::IntRect(0, 0, 32, 32));
-    buttonToRestart.setPosition(328, 270);
-
-    getText("victoryResultTime").setString(resultTime);
-    sf::FloatRect bounds = getText("victoryResultTime").getLocalBounds();
-    getText("victoryResultTime").setOrigin(bounds.width / 2.f, bounds.height / 2.f);
-    getText("victoryResultTime").setPosition(hudView.getCenter());
 
     window.setView(hudView);
 
+    sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+    sf::Vector2f mousePosition = window.mapPixelToCoords(mousePos, hudView);
+    if (getText("playingVictoryButton1").getGlobalBounds().contains(mousePosition)) {
+        getText("playingVictoryButton1").setFillColor({2, 151, 151});
+    }
+    if (getText("playingVictoryButton2").getGlobalBounds().contains(mousePosition)) {
+        getText("playingVictoryButton2").setFillColor({2, 151, 151});
+    }
+
+    getText("playingVictoryTime").setString(resultTime);
+    getText("playingVictoryTime").setOrigin(getText("playingVictoryTime").getLocalBounds().width / 2.f, getText("playingVictoryTime").getLocalBounds().height / 2.f);
     getText("currentLevel").setString(currentLevel);
+    window.draw(getText("playingVictory"));
+    window.draw(getText("playingVictoryTime"));
+    window.draw(getText("playingVictoryButton1"));
+    window.draw(getText("playingVictoryButton2"));
     window.draw(getText("currentLevel"));
-    window.draw(getText("victoryResultTime"));
     window.draw(getText("availableTime"));
     window.draw(getText("countOfSheep"));
-    window.draw(victory);
-    window.draw(buttonToRestart);
-    window.draw(buttonToHome);
 
     window.display();
 }
@@ -317,6 +328,9 @@ void Renderer::renderDefeat(const std::string& currentLevel) {
     window.setView(view);
     window.clear();
 
+    getText("playingDefeatButton1").setFillColor({0, 204, 204});
+    getText("playingDefeatButton2").setFillColor({0, 204, 204});
+    
     renderMap();
     window.draw(zagon);
     for (int i = 0; i < sheeps.size(); ++i) {
@@ -325,26 +339,24 @@ void Renderer::renderDefeat(const std::string& currentLevel) {
     player.draw(window);
     window.setView(window.getDefaultView());
 
-    sf::Sprite defeat, buttonToHome, buttonToRestart;
-    defeat.setTexture(assets.getTexture("buttonsGame"));
-    defeat.setTextureRect(sf::IntRect(144, 32, 144, 64));
-    defeat.setPosition(249, 176);
-    buttonToHome.setTexture(assets.getTexture("buttonsGame"));
-    buttonToHome.setTextureRect(sf::IntRect(32, 0, 32, 32));
-    buttonToHome.setPosition(280, 250);
-    buttonToRestart.setTexture(assets.getTexture("buttonsGame"));
-    buttonToRestart.setTextureRect(sf::IntRect(0, 0, 32, 32));
-    buttonToRestart.setPosition(328, 250);
-
     window.setView(hudView);
 
+    sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+    sf::Vector2f mousePosition = window.mapPixelToCoords(mousePos, hudView);
+    if (getText("playingDefeatButton1").getGlobalBounds().contains(mousePosition)) {
+        getText("playingDefeatButton1").setFillColor({2, 151, 151});
+    }
+    if (getText("playingDefeatButton2").getGlobalBounds().contains(mousePosition)) {
+        getText("playingDefeatButton2").setFillColor({2, 151, 151});
+    }
+
     getText("currentLevel").setString(currentLevel);
+    window.draw(getText("playingDefeat"));
+    window.draw(getText("playingDefeatButton1"));
+    window.draw(getText("playingDefeatButton2"));
     window.draw(getText("currentLevel"));
     window.draw(getText("availableTime"));
     window.draw(getText("countOfSheep"));
-    window.draw(defeat);
-    window.draw(buttonToRestart);
-    window.draw(buttonToHome);
 
     window.display();
 }
@@ -352,9 +364,11 @@ void Renderer::renderDefeat(const std::string& currentLevel) {
 void Renderer::renderPause(const std::string& currentLevel) {
     window.setView(view);
     window.clear();
+    
+    getText("playingPauseButton1").setFillColor({0, 204, 204});
+    getText("playingPauseButton2").setFillColor({0, 204, 204});
 
     renderMap();
-
     for (int i = 0; i < sheeps.size(); ++i) {
         sheeps[i].draw(window);
     }
@@ -362,27 +376,39 @@ void Renderer::renderPause(const std::string& currentLevel) {
     player.draw(window);
     window.setView(window.getDefaultView());
 
-    sf::FloatRect textBounds = getText("playingPause").getLocalBounds();
-    getText("playingPause").setOrigin(textBounds.width / 2.f, textBounds.height / 2.f);
-    getText("playingPause").setPosition(hudView.getCenter());
-
     window.setView(hudView);
 
+    sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+    sf::Vector2f mousePosition = window.mapPixelToCoords(mousePos, hudView);
+    if (getText("playingPauseButton1").getGlobalBounds().contains(mousePosition)) {
+        getText("playingPauseButton1").setFillColor({2, 151, 151});
+    }
+    if (getText("playingPauseButton2").getGlobalBounds().contains(mousePosition)) {
+        getText("playingPauseButton2").setFillColor({2, 151, 151});
+    }
+
     getText("currentLevel").setString(currentLevel);
+    window.draw(getText("playingPause"));
+    window.draw(getText("playingPauseButton1"));
+    window.draw(getText("playingPauseButton2"));
     window.draw(getText("currentLevel"));
     window.draw(getText("availableTime"));
     window.draw(getText("countOfSheep"));
-    window.draw(getText("playingPause"));
 
     window.display();
 }
 
-void Renderer::createText(const std::string& id, const sf::Font& fontText, int charSize, const sf::Color& color, const std::string& text, const sf::Vector2f& pos) {
+void Renderer::createText(const std::string& id, const sf::Font& fontText, int charSize, const sf::Color& color, const std::string& text, bool isSetOrigin, const sf::Vector2f& pos) {
     sf::Text temp;
     temp.setFont(fontText);
     temp.setCharacterSize(charSize);
     temp.setFillColor(color);
     temp.setString(text);
+
+    if (isSetOrigin) {
+        temp.setOrigin(temp.getLocalBounds().width / 2.f, temp.getLocalBounds().height / 2.f);
+    }
+
     temp.setPosition(pos);
 
     texts[id] = std::move(temp);

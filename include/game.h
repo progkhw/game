@@ -81,6 +81,7 @@ public:
     void handleVictoryClick(sf::Vector2i coord);
     void handleDefeatClick(sf::Vector2i coord);
     void handleRecordsClick(sf::Vector2i coord);
+    void handlePauseClick(sf::Vector2i coord);
     void render();
 
     void updateRecord(float timeOfLevel);

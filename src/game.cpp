@@ -255,6 +255,9 @@ void Game::run() {
                     else if (state == GameState::Records) {
                         handleRecordsClick(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
                     }
+                    else if (state == GameState::Pause) {
+                        handlePauseClick(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
+                    }
                 }
             }
             if (event.type == sf::Event::KeyPressed) {
@@ -388,25 +391,25 @@ void Game::run() {
 
 void Game::handleMainMenuClick(sf::Vector2i coord) {
     sf::Vector2f mousePosition = window.mapPixelToCoords(coord, hudView);
-    if (sf::FloatRect(100.f, 30.f, 170.f, 50.f).contains(mousePosition)) {
+    if (renderer.getText("mainMenuButton1").getGlobalBounds().contains(mousePosition)) {
         if (isSoundEnabled) {
             buttonTouching.play();
         }
         state = GameState::LevelSelect;
     }
-    if (sf::FloatRect(100.f, 80.f, 170.f, 50.f).contains(mousePosition)) {
+    if (renderer.getText("mainMenuButton2").getGlobalBounds().contains(mousePosition)) {
         if (isSoundEnabled) {
             buttonTouching.play();
         }
         state = GameState::Records;
     }
-    if (sf::FloatRect(100.f, 130.f, 170.f, 50.f).contains(mousePosition)) {
+    if (renderer.getText("mainMenuButton3").getGlobalBounds().contains(mousePosition)) {
         if (isSoundEnabled) {
             buttonTouching.play();
         }
         state = GameState::Settings;
     }
-    if (sf::FloatRect(100.f, 180.f, 170.f, 50.f).contains(mousePosition)) {
+    if (renderer.getText("mainMenuButton4").getGlobalBounds().contains(mousePosition)) {
         if (isSoundEnabled) {
             buttonTouching.play();
         }
@@ -416,7 +419,7 @@ void Game::handleMainMenuClick(sf::Vector2i coord) {
 
 void Game::handleSettingsClick(sf::Vector2i coord) {
     sf::Vector2f mousePosition = window.mapPixelToCoords(coord, hudView);
-    if (sf::FloatRect(100.f, 30.f, 170.f, 50.f).contains(mousePosition)) {
+    if (renderer.getText("settingsButton1").getGlobalBounds().contains(mousePosition)) {
         if (isSoundEnabled) {
             buttonTouching.play();
         }
@@ -434,7 +437,7 @@ void Game::handleSettingsClick(sf::Vector2i coord) {
             }
         }
     }
-    if (sf::FloatRect(100.f, 80.f, 170.f, 50.f).contains(mousePosition)) {
+    if (renderer.getText("settingsButton2").getGlobalBounds().contains(mousePosition)) {
         if (isSoundEnabled) {
             buttonTouching.play();
         }
@@ -447,7 +450,7 @@ void Game::handleSettingsClick(sf::Vector2i coord) {
             assets.getMusic("mainMusic").pause();
         }
     }
-    if (sf::FloatRect(100.f, 130.f, 170.f, 50.f).contains(mousePosition)) {
+    if (renderer.getText("settingsButton3").getGlobalBounds().contains(mousePosition)) {
         if (isSoundEnabled) {
             buttonTouching.play();
         }
@@ -458,7 +461,7 @@ void Game::handleSettingsClick(sf::Vector2i coord) {
 
 void Game::handleLevelSelectClick(sf::Vector2i coord) {
     sf::Vector2f mousePosition = window.mapPixelToCoords(coord, hudView);
-    if (sf::FloatRect(100.f, 30.f, 170.f, 50.f).contains(mousePosition)) {
+    if (renderer.getText("levelSelectButton1").getGlobalBounds().contains(mousePosition)) {
         if (isSoundEnabled) {
             buttonTouching.play();
         }
@@ -472,7 +475,7 @@ void Game::handleLevelSelectClick(sf::Vector2i coord) {
             }
         }
     }
-    if (sf::FloatRect(100.f, 80.f, 170.f, 50.f).contains(mousePosition)) {
+    if (renderer.getText("levelSelectButton2").getGlobalBounds().contains(mousePosition)) {
         if (isSoundEnabled) {
             buttonTouching.play();
         }
@@ -486,7 +489,7 @@ void Game::handleLevelSelectClick(sf::Vector2i coord) {
             }
         }
     }
-    if (sf::FloatRect(100.f, 130.f, 170.f, 50.f).contains(mousePosition)) {
+    if (renderer.getText("levelSelectButton3").getGlobalBounds().contains(mousePosition)) {
         if (isSoundEnabled) {
             buttonTouching.play();
         }
@@ -501,7 +504,7 @@ void Game::handleLevelSelectClick(sf::Vector2i coord) {
             }
         }
     }
-    if (sf::FloatRect(100.f, 180.f, 170.f, 50.f).contains(mousePosition)) {
+    if (renderer.getText("levelSelectButton4").getGlobalBounds().contains(mousePosition)) {
         if (isSoundEnabled) {
             buttonTouching.play();
         }
@@ -512,14 +515,14 @@ void Game::handleLevelSelectClick(sf::Vector2i coord) {
 
 void Game::handleVictoryClick(sf::Vector2i coord) {
     sf::Vector2f mousePosition = window.mapPixelToCoords(coord, hudView);
-    if (sf::FloatRect(280.f, 270.f, 32.f, 32.f).contains(mousePosition)) {
+    if (renderer.getText("playingVictoryButton1").getGlobalBounds().contains(mousePosition)) {
         if (isSoundEnabled) {
             buttonTouching.play();
         }
 
         state = GameState::MainMenu;
     }
-    if (sf::FloatRect(328.f, 270.f, 32.f, 32.f).contains(mousePosition)) {
+    if (renderer.getText("playingVictoryButton2").getGlobalBounds().contains(mousePosition)) {
         if (isSoundEnabled) {
             buttonTouching.play();
         }
@@ -534,14 +537,36 @@ void Game::handleVictoryClick(sf::Vector2i coord) {
 
 void Game::handleDefeatClick(sf::Vector2i coord) {
     sf::Vector2f mousePosition = window.mapPixelToCoords(coord, hudView);
-    if (sf::FloatRect(280.f, 250.f, 32.f, 32.f).contains(mousePosition)) {
+    if (renderer.getText("playingDefeatButton1").getGlobalBounds().contains(mousePosition)) {
         if (isSoundEnabled) {
             buttonTouching.play();
         }
 
         state = GameState::MainMenu;
     }
-    if (sf::FloatRect(328.f, 250.f, 32.f, 32.f).contains(mousePosition)) {
+    if (renderer.getText("playingDefeatButton2").getGlobalBounds().contains(mousePosition)) {
+        if (isSoundEnabled) {
+            buttonTouching.play();
+        }
+
+        if (loadLevel(currentLevelForRestart)) {
+            currentTime = 0.f;
+            countOfSheepInZagon = 0;
+            state = GameState::Playing;
+        }
+    }
+}
+
+void Game::handlePauseClick(sf::Vector2i coord) {
+    sf::Vector2f mousePosition = window.mapPixelToCoords(coord, hudView);
+    if (renderer.getText("playingPauseButton1").getGlobalBounds().contains(mousePosition)) {
+        if (isSoundEnabled) {
+            buttonTouching.play();
+        }
+
+        state = GameState::MainMenu;
+    }
+    if (renderer.getText("playingPauseButton2").getGlobalBounds().contains(mousePosition)) {
         if (isSoundEnabled) {
             buttonTouching.play();
         }
@@ -556,7 +581,7 @@ void Game::handleDefeatClick(sf::Vector2i coord) {
 
 void Game::handleRecordsClick(sf::Vector2i coord) {
     sf::Vector2f mousePosition = window.mapPixelToCoords(coord, hudView);
-    if (sf::FloatRect(280.f, 200.f, 70.f, 50.f).contains(mousePosition)) {
+    if (renderer.getText("recordsButton1").getGlobalBounds().contains(mousePosition)) {
         if (isSoundEnabled) {
             buttonTouching.play();
         }

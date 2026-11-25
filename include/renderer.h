@@ -45,7 +45,7 @@ public:
     void renderDefeat(const std::string& currentLevel);
     void renderPause(const std::string& currentLevel);
 
-    void createText(const std::string& id, const sf::Font& fontText, int charSize, const sf::Color& color, const std::string& text, const sf::Vector2f& pos);
+    void createText(const std::string& id, const sf::Font& fontText, int charSize, const sf::Color& color, const std::string& text, bool isSetOrigin, const sf::Vector2f& pos);
     sf::Text& getText(const std::string& id);
 
     void updatePositionZagon(const std::pair<float, float>& newZagonSpawn);
