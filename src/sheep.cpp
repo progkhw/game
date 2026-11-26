@@ -34,7 +34,6 @@ Sheep::Sheep(float x, float y, float w, float h, const sf::Texture& name) : Enti
     hitbox = sf::FloatRect(-12.f, -10.f, 24.f, 10.f);
 
     nextBleatTime = std::rand() % 7001 + 5000;
-    nextWanderTime = std::rand() % 3001 + 2000;
 }
 
 Vector Sheep::calculateFear(const Player& player) const {
@@ -233,36 +232,7 @@ void Sheep::update(float time, Game& game) {
         dir = fear + attraction + separation;
     }
     else {
-        wanderTimer += time;
-
-        if (isWandering) {
-            if (wanderTimer >= 3750.f) {
-                isWandering = false;
-                wanderTimer = 0.f;
-                nextWanderTime = std::rand() % 2001 + 1000;
-            }
-            else {
-                if (direction.length() < 0.01f) {
-                    float angle = (std::rand() % 360) * 3.14159265f / 180.f;
-                    direction = Vector(std::cos(angle), std::sin(angle));
-                }
-
-                dir = direction;
-            }
-        }
-        else {
-            speed = 0.f;
-
-            if (wanderTimer >= nextWanderTime) {
-                isWandering = true;
-                wanderTimer = 0.f;
-
-                float angle = (std::rand() % 360) * 3.14159265f / 180.f;
-                direction = Vector(std::cos(angle), std::sin(angle));
-
-                dir = direction;
-            }
-        }
+        dir = fear;
     }
 
     if (dir.length() > 0.01f) {
@@ -270,15 +240,12 @@ void Sheep::update(float time, Game& game) {
         direction = getBestDir(game);
         speed = MAX_SPEED;
     }
-    else if (isWandering || fear.length() > 0.f) {
+    else {
         speed *= FRICTION;
 
         if (speed < 0.01f) {
             speed = 0.f;
         }
-    }
-    else {
-        speed = 0.f;
     }
 
     float coef = 1.f;

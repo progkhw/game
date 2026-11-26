@@ -21,10 +21,6 @@ private:
     float bleatTimer = 0.f;
     float nextBleatTime = 0.f;
 
-    float wanderTimer = 0.f;
-    float nextWanderTime = 0.f;
-    bool isWandering = false;
-
 public:
     Sheep(float x, float y, float w, float h, const sf::Texture& name);
 
